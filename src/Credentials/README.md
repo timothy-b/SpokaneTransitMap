@@ -6,5 +6,5 @@
 
 
     <?php
-        define('GMAPS_JS_API_KEY','<YOUR_API_KEY_HERE>');
+        define('GMAPS_JS_API_KEY','__YOUR_API_KEY_HERE__');
     ?>
