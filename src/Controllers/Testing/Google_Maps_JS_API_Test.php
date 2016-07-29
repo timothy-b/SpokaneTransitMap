@@ -1,7 +1,14 @@
+<?php
+/**
+ * https://developers.google.com/maps/documentation/javascript/tutorial
+ */
+
+require_once('../../Credentials/doNotUpload.php');
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <?php require_once('../../Credentials/doNotUpload.php'); ?>
 
     <title>Simple Map</title>
     <meta name="viewport" content="initial-scale=1.0">
@@ -18,7 +25,9 @@
     </style>
 
 </head>
+
 <body>
+
 <div id="map"></div>
 <script>
     var map;
@@ -30,7 +39,10 @@
     }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY; ?>&callback=initMap"
-        async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY; ?>&callback=initMap"async defer>
+
+</script>
+
 </body>
+
 </html>
