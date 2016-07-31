@@ -1,11 +1,11 @@
 $(document).ready(function ()
 {
 		$("#nameButtonID").click(sendNameData).click(hideForms);
-		$("#nameButtonID").click(sendNameData).click(hideForms);
+		$("#numberButtonID").click(sendNameData).click(hideForms);
 		
 });
 
-function sendNameData()
+function sendNumberData()
 {
 	id = $('#stopNameID').attr('id');
 	data = 
@@ -19,9 +19,9 @@ function sendNameData()
 	$.ajax(data);
 }
 
-function sendNumberData()
+function sendNameData()
 {
-	name = $('#stopNumberID').attr('id');
+	name = $('#stopNumberID').attr('name');
 	data = 
 	{
 		url: './getCoordsFromInput.php',
