@@ -1,23 +1,22 @@
 <html>
 	<head>
 		<title>STA Project Stop Info</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js""></script>
-		<script src="sendStopData.js"></script>
-	</head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script src="../JavaScript/sendStopData.js"></script>
+	</head>b
 	
 	<body>
 	<p>Please Enter the Stop Name or Number</p>
-	<form id="StopNameForm" class="form">
-		Stop Name:
-		<input type="text" name="StopNumber" id="stopNameID" method="get" ></input>
-		<button type="button" name="nameButton" id="nameButtonID" class="button">Submit</button>
+	<form id="formStopName" class="form" method="get">
+		<label for="stopNameID">Stop Name:</label>
+		<input type="text" name="StopNumber" id="stopNameID" >
+		<button type="button" name="btnStopName" id="btnStopNameID" class="button">Submit</button>
 	</form>
 	<p>or</p>
-	<form id="stopNumberForm" class="form">
-		Stop Number:
-		<input type="text" name="StopNumber" id="stopNumberID" method="get" ></input>
-		<button type="button" name="numberButton" id="numberButtonID" class="button">Submit</button>
+	<form id="formStopNumber" class="form" method="get">
+		<label for="stopNumberID">Stop Number:</label>
+		<input type="text" name="StopNumber" id="stopNumberID" >
+		<button type="button" name="btnStopNumber" id="btnStopNumberID" class="button">Submit</button>
 	</form>
-		
 	</body>
 </html>
