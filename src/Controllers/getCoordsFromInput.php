@@ -24,6 +24,9 @@ function validate()
 
 function sendRequest()
 {
+    if (!array_key_exists('identifier', $_GET))
+        die('key not found: identifier');
+
     $identifier = urlencode($_GET['identifier']);
 
     $url = "https://maps.googleapis.com/maps/api/place/textsearch/json?key=" . GMAPS_JS_API_KEY . "&query=$identifier";
