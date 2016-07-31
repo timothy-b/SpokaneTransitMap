@@ -1,18 +1,25 @@
 $(document).ready(function ()
 {
-	$("#btnStopName").click(sendNameData);
+	$("#btnStopInformation").click(sendData);
 });
 
-function sendNameData(event)
+function sendData(event)
 {
 	event.preventDefault();
 	var name = $("#idStopName").val();
+	var radius = $("#idStopRadius").val();
+	var dateTime = $("#idStopTime").val();
 	var data =
 	{
 		url: '../Controllers/getCoordsFromInput.php',
 		type: 'get',
 		dataType: "json",
-		data: {identifier: name},
+		data: 
+		{
+			identifier: name,
+			dateTime: dateTime,
+			radius: radius
+		},
 		success: onQuerySuccess
 	};
 	console.log(data);
