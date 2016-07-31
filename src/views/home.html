@@ -9,14 +9,21 @@
 
 	<div id="divFormInput">
 
-	<p>Please Enter the Stop Name or Number</p>
+	<p>Please Enter the Stop Information</p>
 
 	<label for="idStopName">Stop Name:</label>
-	<input type="text" name="stopName" id="idStopName" >
-	<button type="button" name="btnStopName" id="btnStopName" class="button">Submit</button>
-
+	<input type="text" name="stopName" id="idStopName"><br>
+	
+	<label for="stopDate">Stop Date and Time:</label>
+	<input type="datetime-local" name="stopTime" id="idStopTime"><br>
+	
+	<label for="radius">Stop Radius:</label>
+	<input type="number" name="stopRadius" id="idStopRadius"><br>
+	
+	<button type="button" name="btnStopInformation" id="btnStopInformation" class="button">Submit</button><br>
+	
 	</div>
-
+	
 	<div id="divResults" style="white-space:pre-line;"></div>
 	</body>
 </html>
