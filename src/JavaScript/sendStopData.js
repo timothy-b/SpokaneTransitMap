@@ -7,7 +7,7 @@ $(document).ready(function ()
 
 function sendNumberData()
 {
-	id = $('#stopNameID').attr('id');
+	id = $('#stopNmberID').attr('id');
 	data = 
 	{
 		url: './getCoordsFromInput.php',
@@ -21,7 +21,7 @@ function sendNumberData()
 
 function sendNameData()
 {
-	name = $('#stopNumberID').attr('name');
+	name = $('#stopNameID').attr('name');
 	data = 
 	{
 		url: './getCoordsFromInput.php',
