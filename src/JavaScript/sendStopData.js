@@ -2,7 +2,6 @@ $(document).ready(function ()
 {
 		$("#btnStopName").click(sendNameData).click(hideForms);
 		$("#btnStopNumber").click(sendNumberData).click(hideForms);
-		
 });
 
 function sendNumberData()
