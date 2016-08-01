@@ -15,6 +15,8 @@ require_once('../Credentials/doNotUpload.php');
 		<script src="../../js/bootstrap.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&callback=initMap" async defer></script>
 
+		<link rel="stylesheet" href="../../css/bootstrap.min.css">
+
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
 		<style>
@@ -23,7 +25,7 @@ require_once('../Credentials/doNotUpload.php');
 				margin: 0;
 				padding: 0;
 			}
-			#map {
+			#divGMap {
 				height: 100%;
 			}
 		</style>
@@ -32,24 +34,25 @@ require_once('../Credentials/doNotUpload.php');
 	
 	<body>
 
-	<div id="divFormInput" class="col-md-4">
+	<div class="container-fluid">
 
-		<p>Please Enter the Stop Information</p>
+		<div id="divFormInput" class="col-md-2">
 
-		<label for="idStopName">Stop Name:</label>
-		<input type="text" name="stopName" id="idStopName"><br>
+			<h3><span class="label label-primary">Find a bus stop near...</span></h3><br>
 
-		<label for="idStopTime">Stop Date and Time:</label>
-		<input type="datetime-local" name="stopTime" id="idStopTime"><br>
+			<input class="form-control" type="text" name="stopName" id="idStopName" placeholder="Search Places"><br>
 
-		<label for="idStopRadius">Stop Radius:</label>
-		<input type="number" name="stopRadius" id="idStopRadius"><br>
+			<input class="form-control hidden" type="datetime-local" name="stopTime" id="idStopTime">
 
-		<button type="button" name="btnStopInformation" id="btnStopInformation" class="button">Submit</button><br>
-	
+			<input class="form-control" type="number" name="stopRadius" id="idStopRadius" placeholder="Radius (meters)"><br>
+
+			<button class="btn btn-default" type="button" name="btnStopInformation" id="btnStopInformation" >Submit</button><br>
+
+		</div>
+
+		<div id="divMap" ><?php include_once("../Views/map.php")?></div>
+
 	</div>
-	
-	<div id="divMap" class="col-md-6"><?php include_once("../Views/map.php")?></div>
 
 	</body>
 </html>
