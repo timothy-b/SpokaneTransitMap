@@ -1,9 +1,17 @@
+<?php
+/**
+ * Gets stops operated by the STA, displays on map, and allows user to filter based on route
+ */
+
+require_once('../../Credentials/doNotUpload.php');
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqVApO8AvqNkgPrpj4XVI7lli6psjxf-k&callback=initMap" async defer></script>
-		<script src="mapper.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?<?php echo GMAPS_JS_API_KEY ?>key=&callback=initMap" async defer></script>
+		<script src="../../JavaScript/mapper.js"></script>
 		<title>Simple Map</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
