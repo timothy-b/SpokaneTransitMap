@@ -26,6 +26,7 @@ function onSubmit(event)
 	$.ajax(data);
 }
 
+//TODO: fix so that stops continuously load, 100 at a time
 function onPlaceQuerySuccess(response){
 	var result = response.results[0];
 	console.log("got a place matching the given identifier");
@@ -48,11 +49,12 @@ function onPlaceQuerySuccess(response){
 function onStopsQuerySuccess(response){
 	console.log("got stops:");
 	console.log(response);
-	getMarkersFromStopsRequest(response)
+	removeMarkersFromMap();
+	addMarkersToMap(response);
 }
 
 function buildStopsURL (lat, lon, rad ){
 	var stops_TL_API_call = "https://transit.land/api/v1/stops?lat=" +
-		lat + "&lon=" + lon + "&r=" + rad;
+		lat + "&lon=" + lon + "&r=" + rad + "&per_page=2500";
 	return stops_TL_API_call;
 }

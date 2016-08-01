@@ -20,10 +20,14 @@ $(document).ready(function() {
 });
 
 function addMarkersToMap(json){
-    var markers = getMarkersFromStopsRequest(json);
-    gMarkers = markers;
+    gMarkers = getMarkersFromStopsRequest(json);
     showMarkers();
     console.log(gMarkers);
+}
+
+function removeMarkersFromMap(){
+    hideMarkers();
+    gMarkers = null;
 }
 
 function buildStopMarker(stop)
@@ -37,7 +41,6 @@ function buildStopMarker(stop)
     });
 
     marker.addListener('click', markerClicked);
-    marker.setMap(map);
     return marker;
 }
 
