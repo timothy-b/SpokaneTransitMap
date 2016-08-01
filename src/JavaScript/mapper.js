@@ -58,9 +58,9 @@ function parseData(json)
 		var name = data[x].properties.name;
 		var latLng = new google.maps.LatLng(data[x].geometry.coordinates[1], data[x].geometry.coordinates[0]);
 		var stops = [];
-		for(var y = 0; y < data[x].properties.routes_serving_stop.length; y++)
+		for(var y = 0; y < data[x].routes_serving_stop.length; y++)
 		{
-			stops.push(data[x].properties.routes_serving_stop[y]);
+			stops.push(data[x].routes_serving_stop[y]);
 		}
 		addStop(name,latLng,stops);
 	}
