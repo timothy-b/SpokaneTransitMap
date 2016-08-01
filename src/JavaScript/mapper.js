@@ -80,7 +80,7 @@ function hideMarkers()
 
 function markerClicked()
 {
-	var str = "";
+	var str = "Routes: ";
 	for(var x = 0; x < this.route_numbers.length; x++)
 	{
 		str += this.route_numbers[x][0];
