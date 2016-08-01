@@ -1,6 +1,6 @@
 <?php
 /**
- * https://developers.google.com/maps/documentation/javascript/tutorial
+ *  The home page. Contains the form, the map, and all javascript references.
  */
 
 require_once('../Credentials/doNotUpload.php');
@@ -34,18 +34,18 @@ require_once('../Credentials/doNotUpload.php');
 
 	<div id="divFormInput" class="col-md-4">
 
-	<p>Please Enter the Stop Information</p>
+		<p>Please Enter the Stop Information</p>
 
-	<label for="idStopName">Stop Name:</label>
-	<input type="text" name="stopName" id="idStopName"><br>
-	
-	<label for="idStopTime">Stop Date and Time:</label>
-	<input type="datetime-local" name="stopTime" id="idStopTime"><br>
-	
-	<label for="idStopRadius">Stop Radius:</label>
-	<input type="number" name="stopRadius" id="idStopRadius"><br>
-	
-	<button type="button" name="btnStopInformation" id="btnStopInformation" class="button">Submit</button><br>
+		<label for="idStopName">Stop Name:</label>
+		<input type="text" name="stopName" id="idStopName"><br>
+
+		<label for="idStopTime">Stop Date and Time:</label>
+		<input type="datetime-local" name="stopTime" id="idStopTime"><br>
+
+		<label for="idStopRadius">Stop Radius:</label>
+		<input type="number" name="stopRadius" id="idStopRadius"><br>
+
+		<button type="button" name="btnStopInformation" id="btnStopInformation" class="button">Submit</button><br>
 	
 	</div>
 	

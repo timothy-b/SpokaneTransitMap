@@ -1,9 +1,13 @@
+/**
+ * @summary Sets up the map and handles programmatic interaction with it.
+ */
+
 var map;
 var gMarkers = [];
 
 function initMap()
 {
-    map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('divGMap'), {
         center: {lat: 47.492512, lng: -117.58387500000003},
         zoom: 14
     });

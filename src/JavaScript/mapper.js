@@ -1,3 +1,7 @@
+/**
+ * Deprecated except for the demo in src/Controllers/Testing/
+ */
+
 var map;
 var markers = [];
 

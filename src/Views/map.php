@@ -1,5 +1,6 @@
 <!--TODO: programmatically add options -->
 
+<!-- Map -->
 
 <input type="button" id="butHideMarkers" value="Hide Markers">
 <input type="button" id="butShowMarkers" value="Show Markers">
@@ -36,7 +37,8 @@
     <option value="r-c2kr-124">124</option>
     <option value="r-c2kq-165">165</option>
     <option value="r-c2kx-173">173</option>
-    <option value="r-c2kx-174">173</option>
 </select>
 <input type="button" id="butShowMarkersByID" value="Show Markers By ID">
-<div id="map"></div>
+<div id="divGMap"></div>
+
+<!-- end Map -->

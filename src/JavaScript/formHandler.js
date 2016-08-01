@@ -1,3 +1,7 @@
+/**
+ * @summary Handles user interaction with the forms and makes AJAX calls
+ */
+
 $(document).ready(function ()
 {
 	//var options = {types: ['establishment']};
@@ -26,7 +30,7 @@ function onPlaceQuerySuccess(response){
 	var result = response.results[0];
 	console.log("got a place matching the given identifier");
 	console.log(result);
-
+0
 	var lat = result.geometry.location.lat;
 	var lng = result.geometry.location.lng;
 	var radius = $("#idStopRadius").val();
