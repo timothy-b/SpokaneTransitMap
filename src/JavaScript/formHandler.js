@@ -29,7 +29,7 @@ function onSubmit(event)
 //TODO: fix so that stops continuously load, 100 at a time
 function onPlaceQuerySuccess(response){
 	var result = response.results[0];
-	console.log("got a place matching the given identifier");
+	console.log("got a place matching the given identifier:");
 	console.log(result);
 0
 	var lat = result.geometry.location.lat;

@@ -4,6 +4,7 @@
 
 var map;
 var gMarkers = [];
+var gRouteNameIdDict = {};
 
 function initMap()
 {
@@ -16,18 +17,30 @@ function initMap()
 $(document).ready(function() {
     $("#butHideMarkers").click(hideMarkers);
     $("#butShowMarkers").click(showMarkers);
-    $("#butShowMarkersByID").click(showRoutesByRouteID);
+    $("#butShowMarkersByID").click(showRoutesByRouteId);
+    $("#sel_route_id").attr("oninput","showRoutesByRouteId()");
 });
 
 function addMarkersToMap(json){
-    gMarkers = getMarkersFromStopsRequest(json);
+    if (gMarkers == null)
+        gMarkers = [];
+    var newMarkers = getMarkersFromStopsRequest(json);
+    gMarkers = gMarkers.concat(newMarkers);
     showMarkers();
-    console.log(gMarkers);
+
+    if (gRouteNameIdDict == null)
+        gRouteNameIdDict = {};
+    var newRouteIds = getNewRouteIds(json);
+    for (var newRouteId in newRouteIds)
+        gRouteNameIdDict[newRouteId] = newRouteIds[newRouteId];
+
+    updateDropdownRouteIds();
 }
 
 function removeMarkersFromMap(){
     hideMarkers();
     gMarkers = null;
+    gRouteNameIdDict = null;
 }
 
 function buildStopMarker(stop)
@@ -46,11 +59,13 @@ function buildStopMarker(stop)
 
 function getMarkersFromStopsRequest(json)
 {
-    if (!json.hasOwnProperty('stops'))
+    if (!json.hasOwnProperty('stops')) {
+        console.error('PropertyNotFoundException: stops\n in the following object:');
+        console.error(json);
         return null;
+    }
 
     var markers = [];
-
     for(var i = 0; i < json.stops.length; i++)
     {
         markers.push(buildStopMarker(json.stops[i]));
@@ -58,14 +73,37 @@ function getMarkersFromStopsRequest(json)
     return markers;
 }
 
-function showRoutesByRouteID()
+function getNewRouteIds(json){
+    var newRouteIds = {};
+
+    for (var s = 0; s < json.stops.length; s++) {
+        var stop = json.stops[s];
+        for (var r = 0; r < stop.routes_serving_stop.length; r++) {
+            var route = stop.routes_serving_stop[r];
+            newRouteIds[route.route_onestop_id] = route.route_name;
+        }
+    }
+    console.log(newRouteIds);
+    return newRouteIds;
+}
+
+function updateDropdownRouteIds(){
+    var $dropdown = $("#sel_route_id");
+    $dropdown.html("");
+    for (var routeId in gRouteNameIdDict)
+        $dropdown.append("<option value=\""+ routeId +"\">"+ gRouteNameIdDict[routeId] + "</option>");
+}
+
+function showRoutesByRouteId()
 {
     console.log($("#route_id").val());
     hideMarkers();
+
+    var selectedId = $('#sel_route_id').find(":selected").val();
+
     for (var i = 0; i < gMarkers.length; i++) {
         for (var j = 0; j < gMarkers[i].route_numbers.length; j++) {
-            if (gMarkers[i].route_numbers[j].route_onestop_id.includes($("#route_id").val())) {
-                console.log("found");
+            if (gMarkers[i].route_numbers[j].route_onestop_id.includes(selectedId)) {
                 gMarkers[i].setMap(map);
                 break;
             }
