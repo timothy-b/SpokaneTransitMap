@@ -52,10 +52,10 @@ function showMarkers(id)
 
 function parseData(json)
 {
-	var data = json.features;
+	var data = json.stops;
 	for(var x = 0; x < data.length; x++)
 	{
-		var name = data[x].properties.name;
+		var name = data[x].name;
 		var latLng = new google.maps.LatLng(data[x].geometry.coordinates[1], data[x].geometry.coordinates[0]);
 		var stops = [];
 		for(var y = 0; y < data[x].routes_serving_stop.length; y++)
