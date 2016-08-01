@@ -7,8 +7,6 @@ $(document).ready(function ()
 	$("#btnStopInformation").click(sendNameData);
 });
 
-var input = document.getElementById('searchTextField');
-
 function sendNameData(event)
 {
 	event.preventDefault();
