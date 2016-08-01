@@ -60,7 +60,7 @@ function parseData(json)
 		var stops = [];
 		for(var y = 0; y < data[x].routes_serving_stop.length; y++)
 		{
-			stops.push(data[x].routes_serving_stop[y]);
+			stops.push(data[x].routes_serving_stop[y].route_onestop_id);
 		}
 		addStop(name,latLng,stops);
 	}
