@@ -1,9 +1,15 @@
 $(document).ready(function ()
 {
-	$("#btnStopInformation").click(sendData);
+	var options = {types: ['establishment']};
+	var input = document.getElementById('idStopName');
+	
+	autocomplete = new google.maps.places.Autocomplete(input, options);
+	$("#btnStopInformation").click(sendNameData);
 });
 
-function sendData(event)
+var input = document.getElementById('searchTextField');
+
+function sendNameData(event)
 {
 	event.preventDefault();
 	var name = $("#idStopName").val();
@@ -31,3 +37,5 @@ function onQuerySuccess(result){
 	$("#divResults").html("").append(JSON.stringify(result, null,'&emsp;'));
 	$("divFormInput").slideUp();
 }
+
+
