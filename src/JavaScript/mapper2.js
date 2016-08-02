@@ -5,6 +5,7 @@
 var map;
 var gMarkers = [];
 var gRouteNameIdDict = {};
+var gMarkerYou;
 
 function initMap()
 {
@@ -21,26 +22,33 @@ $(document).ready(function() {
     $("#sel_route_id").attr("oninput","showRoutesByRouteId()");
 });
 
-function addMarkersToMap(json){
+function addNewStops(json){
+    addNewMarkers(json);
+    showMarkers();
+
+    addNewRouteIds(json);
+    updateDropdownRouteIds();
+}
+
+//region marker methods
+
+function addNewMarkers(json){
     if (gMarkers == null)
         gMarkers = [];
     var newMarkers = getMarkersFromStopsRequest(json);
     gMarkers = gMarkers.concat(newMarkers);
-    showMarkers();
-
-    if (gRouteNameIdDict == null)
-        gRouteNameIdDict = {};
-    var newRouteIds = getNewRouteIds(json);
-    for (var newRouteId in newRouteIds)
-        gRouteNameIdDict[newRouteId] = newRouteIds[newRouteId];
-
-    updateDropdownRouteIds();
 }
 
-function removeMarkersFromMap(){
-    hideMarkers();
-    gMarkers = null;
-    gRouteNameIdDict = null;
+function addYouAreHereMarker(lat, lng){
+    if (gMarkerYou != null)
+        gMarkerYou.setMap(null);
+
+    gMarkerYou = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        icon: "./you.png"
+    });
+
+    gMarkerYou.setMap(map);
 }
 
 function buildStopMarker(stop)
@@ -53,7 +61,7 @@ function buildStopMarker(stop)
         route_numbers: stop.routes_serving_stop
     });
 
-    marker.addListener('click', markerClicked);
+    marker.addListener('click', onMarkerClicked);
     return marker;
 }
 
@@ -73,6 +81,46 @@ function getMarkersFromStopsRequest(json)
     return markers;
 }
 
+function hideMarkers()
+{
+    for (var i = 0; i < gMarkers.length; i++)
+    {
+        gMarkers[i].setMap(null);
+    }
+}
+
+function onMarkerClicked()
+{
+    var infowindow = new google.maps.InfoWindow({content: this.title + "<br>" + this.getPosition().lat() + "<br>" + this.getPosition().lng() + "<br>"});
+    infowindow.open(map,this);
+}
+
+function removeMarkersFromMap(){
+    hideMarkers();
+    gMarkers = null;
+    gRouteNameIdDict = null;
+}
+
+function showMarkers()
+{
+    for (var i = 0; i < gMarkers.length; i++)
+    {
+        gMarkers[i].setMap(map);
+    }
+}
+
+//endregion
+
+//region routes
+
+function addNewRouteIds(json){
+    if (gRouteNameIdDict == null)
+        gRouteNameIdDict = {};
+    var newRouteIds = getNewRouteIds(json);
+    for (var newRouteId in newRouteIds)
+        gRouteNameIdDict[newRouteId] = newRouteIds[newRouteId];
+}
+
 function getNewRouteIds(json){
     var newRouteIds = {};
 
@@ -87,16 +135,8 @@ function getNewRouteIds(json){
     return newRouteIds;
 }
 
-function updateDropdownRouteIds(){
-    var $dropdown = $("#sel_route_id");
-    $dropdown.html("");
-    for (var routeId in gRouteNameIdDict)
-        $dropdown.append("<option value=\""+ routeId +"\">"+ gRouteNameIdDict[routeId] + "</option>");
-}
-
 function showRoutesByRouteId()
 {
-    console.log($("#route_id").val());
     hideMarkers();
 
     var selectedId = $('#sel_route_id').find(":selected").val();
@@ -111,24 +151,17 @@ function showRoutesByRouteId()
     }
 }
 
-function showMarkers()
-{
-    for (var i = 0; i < gMarkers.length; i++)
-    {
-        gMarkers[i].setMap(map);
-    }
+function updateDropdownRouteIds(){
+    var $dropdown = $("#sel_route_id");
+    $dropdown.html("");
+
+    var sortableRoutes = [];
+    for (var routeId in gRouteNameIdDict)
+        sortableRoutes.push([routeId, gRouteNameIdDict[routeId]]);
+    sortableRoutes.sort( function(a,b){return a[1].localeCompare(b[1],'kn', {numeric: true});} );
+
+    for (var i = 0; i < sortableRoutes.length; i++)
+        $dropdown.append("<option value=\""+ sortableRoutes[i][0] +"\">"+ sortableRoutes[i][1] + "</option>");
 }
 
-function hideMarkers()
-{
-    for (var i = 0; i < gMarkers.length; i++)
-    {
-        gMarkers[i].setMap(null);
-    }
-}
-
-function markerClicked()
-{
-    var infowindow = new google.maps.InfoWindow({content: this.title + "<br>" + this.getPosition().lat() + "<br>" + this.getPosition().lng() + "<br>"});
-    infowindow.open(map,this);
-}
+//endregion

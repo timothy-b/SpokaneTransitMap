@@ -31,9 +31,12 @@ function onPlaceQuerySuccess(response){
 	var result = response.results[0];
 	console.log("got a place matching the given identifier:");
 	console.log(result);
-0
+
 	var lat = result.geometry.location.lat;
 	var lng = result.geometry.location.lng;
+
+	addYouAreHereMarker(lat,lng);
+
 	var radius = $("#idStopRadius").val();
 
 	var data = {
@@ -50,7 +53,7 @@ function onStopsQuerySuccess(response){
 	console.log("got stops:");
 	console.log(response);
 	removeMarkersFromMap();
-	addMarkersToMap(response);
+	addNewStops(response);
 }
 
 function buildStopsURL (lat, lon, rad ){
