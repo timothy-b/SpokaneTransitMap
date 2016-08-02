@@ -10,8 +10,8 @@ require_once('../../Credentials/doNotUpload.php');
 <html>
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?<?php echo GMAPS_JS_API_KEY ?>key=&callback=initMap" async defer></script>
 		<script src="../../JavaScript/mapper.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY ?>&callback=initMap" async defer></script>
 		<title>Simple Map</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
@@ -62,7 +62,6 @@ require_once('../../Credentials/doNotUpload.php');
 			<option value="r-c2kr-124">124</option>
 			<option value="r-c2kq-165">165</option>
 			<option value="r-c2kx-173">173</option>
-			<option value="r-c2kx-174">173</option>
 		</select>
 		<input type="button" id="butShowMarkersByID" value="Show Markers By ID">
 		<div id="map"></div>

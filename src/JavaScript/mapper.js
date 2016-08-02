@@ -12,8 +12,8 @@ function initMap()
 $(document).ready(function() {
 	$("#butHideMarkers").click(hideMarkers);
 	$("#butShowMarkers").click(showMarkers);
-	$("#butShowMarkersByID").click(showByIdClicked);
-	$.get("https://transit.land/api/v1/stops?lat=47.492512&lon=-117.58387500000003&r=1000&per_page=2500", parseData)
+	$("#butShowMarkersByID").click(function(){hideMarkers(); showByIdClicked();});
+	$.get("https://transit.land/api/v1/stops?lat=47.492512&lon=-117.58387500000003&r=100000&per_page=2500", parseData)
 	//$.get("https://transit.land/api/v1/stops.json?served_by=o-c2kx-spokanetransitauthority&per_page=1000", parseData);
 	//$.get("https://transit.land/api/v1/stops.geojson?served_by=o-c2kx-spokanetransitauthority", parseData);
 });
@@ -29,8 +29,8 @@ function addStop(stopName, latLng, stops)
 		position: latLng,
 		map:map,
 		title: stopName,
-		icon: "./bus.png",
-		route_numbers: stops,
+		icon: "../../Views/bus.png",
+		route_numbers: stops
 	});
 	markers.push(marker);
 	marker.addListener('click', markerClicked);

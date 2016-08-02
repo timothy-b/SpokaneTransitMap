@@ -3,8 +3,14 @@ An improved [spokanetransit.com](https://www.spokanetransit.com/)
 
 Using php7 with [PHPstorm](https://www.jetbrains.com/student/)
 
-[Live version of project's directory](http://timothy-b.com/SpokaneTransitMap/)
+####Live project links:
 
-[Live version of project's homepage](http://timothy-b.com/SpokaneTransitMap/Views/home.html)
+[Project homepage](http://timothy-b.com/SpokaneTransitMap/src/Views/home.php)
 
-[Live version of the Google Maps JavaScript API Hello World](http://timothy-b.com/SpokaneTransitMap/src/Controllers/Testing/Google_Maps_JS_API_Test.php)
+[Project directory](http://timothy-b.com/SpokaneTransitMap/)
+
+Functionality demos:
+
+[Google Maps JavaScript API Hello World](http://timothy-b.com/SpokaneTransitMap/src/Controllers/Testing/Google_Maps_JS_API_Test.php)
+
+[route stop marker demo](http://timothy-b.com/SpokaneTransitMap/src/Controllers/Testing/GMaps_Map_display_stops_on_routes.php)
