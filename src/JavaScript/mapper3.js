@@ -12,6 +12,7 @@ var Mapper = (function(){
         var gMarkers = [];
         var gRouteNameIdDict = {};
         var gMarkerYou;
+        var gRouteLines = [];
         //endregion
 
         return {
@@ -117,7 +118,7 @@ var Mapper = (function(){
             {
                 var sname = prompt("Please enter the stop name");
                 if (sname != null && sname != "") {
-                    document.cookie = sname + "=" + onestop_id;
+                    document.cookie = sname + "=" + onestop_id + "; expires=Thu, 18 Dec 2200 12:00:00 UTC; path=/";
                 }
             },
 
@@ -173,6 +174,29 @@ var Mapper = (function(){
 
                 for (var i = 0; i < sortableRoutes.length; i++)
                     $dropdown.append("<option value=\""+ sortableRoutes[i][0] +"\">"+ sortableRoutes[i][1] + "</option>");
+            },
+            
+            drawRoutePolyLines: function(json){
+                var data = json.route_stop_patterns;
+            	var routeCoordinates = [];
+            	var x = 3;
+            	for(var x = 0; x < data.length; x++)
+            	{
+            		for(var y = 0; y < data[x].geometry.coordinates.length; y++)
+            		{
+            			var coords = {lat:data[x].geometry.coordinates[y][1],lng:data[x].geometry.coordinates[y][0]};
+            			routeCoordinates.push(coords)
+            		}
+            		var routePath = new google.maps.Polyline({
+                        path: routeCoordinates,
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 4
+                    });
+            		routePath.setMap(map);
+            		routeCoordinates = [];
+            	}
             }
 
             //endregion
