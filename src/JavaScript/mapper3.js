@@ -117,7 +117,7 @@ var Mapper = (function(){
             {
                 var sname = prompt("Please enter the stop name");
                 if (sname != null && sname != "") {
-                    document.cookie = sname + "=" + onestop_id;
+                    document.cookie = sname + "=" + onestop_id + "; expires=Thu, 18 Dec 2200 12:00:00 UTC; path=/";
                 }
             },
 
