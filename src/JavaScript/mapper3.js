@@ -173,6 +173,28 @@ var Mapper = (function(){
 
                 for (var i = 0; i < sortableRoutes.length; i++)
                     $dropdown.append("<option value=\""+ sortableRoutes[i][0] +"\">"+ sortableRoutes[i][1] + "</option>");
+            },
+            
+            drawRoutePolyLines: function(json){
+            	var data = json.route_stop_patterns;
+            	var routeCoordinates = [];
+            	var x = 3;
+            	for(var x = 0; x < data.length; x++)
+            	{
+            		for(var y = 0; y < data[x].geometry.coordinates.length; y++)
+            		{
+            			var coords = {lat:data[x].geometry.coordinates[y][1],lng:data[x].geometry.coordinates[y][0]};
+            		}
+            		var routePath = new google.maps.Polyline({
+                      path: routeCoordinates,
+                      geodesic: true,
+                      strokeColor: '#FF0000',
+                      strokeOpacity: 1.0,
+                      strokeWeight: 4
+                    });
+            		routePath.setMap(map);
+            		routeCoordinates = [];
+            	}
             }
 
             //endregion
