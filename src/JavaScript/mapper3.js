@@ -66,9 +66,9 @@ var Mapper = (function(){
                     icon: "./bus.png",
                     route_numbers: stop.routes_serving_stop
                 });
-                console.log("marker:");
-                console.log(marker);
                 marker.addListener('click',function() {
+                    console.log(this);
+
                     var infowindow = new google.maps.InfoWindow({
                         content: "<input type=\"button\" onclick=\"mapper.showPromptSaveMarker(\'" + stop.onestop_id + "\')\" value=\"Save Stop\"/>"
                     });
@@ -177,7 +177,7 @@ var Mapper = (function(){
             },
             
             drawRoutePolyLines: function(json){
-				if (gRouteLines == null)
+		if (gRouteLines == null)
                     gRouteLines = [];
             	var routePattern = json.route_stop_patterns;
             	var routeCoordinates = [];
@@ -189,22 +189,22 @@ var Mapper = (function(){
 						routeCoordinates.push(coordinates);
             		}
             		var routePath = new google.maps.Polyline({
-                      path: routeCoordinates,
-                      geodesic: true,
-                      strokeColor: '#FF0000',
-                      strokeOpacity: 1.0,
-                      strokeWeight: 4
-                    });
+                      		path: routeCoordinates,
+                      		geodesic: true,
+                      		strokeColor: '#FF0000',
+                		strokeOpacity: 1.0,
+                	     	strokeWeight: 4
+                    	});
             		routePath.setMap(map);
             		gRouteLines.push(routePath);
             		routeCoordinates = [];
-            	}
-            }
+     		}
+        },
 			
-			removeRouteLinesFromMap: function() {
-                for (var i = 0; i < gRouteLines.length; i++)
-                    gRouteLines[i].setMap(null);
-				gRouteLines = null;
+	    removeRouteLinesFromMap: function() {
+        	for (var i = 0; i < gRouteLines.length; i++)
+                     gRouteLines[i].setMap(null);
+		gRouteLines = null;
             }
 
             //endregion
