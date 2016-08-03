@@ -177,26 +177,34 @@ var Mapper = (function(){
             },
             
             drawRoutePolyLines: function(json){
-                var data = json.route_stop_patterns;
+				if (gRouteLines == null)
+                    gRouteLines = [];
+            	var routePattern = json.route_stop_patterns;
             	var routeCoordinates = [];
-            	var x = 3;
-            	for(var x = 0; x < data.length; x++)
+            	for(var x = 0; x < routePattern.length; x++)
             	{
-            		for(var y = 0; y < data[x].geometry.coordinates.length; y++)
+            		for(var y = 0; y < routePattern[x].geometry.coordinates.length; y++)
             		{
-            			var coords = {lat:data[x].geometry.coordinates[y][1],lng:data[x].geometry.coordinates[y][0]};
-            			routeCoordinates.push(coords)
+            			var coordinates = {lat:routePattern[x].geometry.coordinates[y][1],lng:routePattern[x].geometry.coordinates[y][0]};
+						routeCoordinates.push(coordinates);
             		}
             		var routePath = new google.maps.Polyline({
-                        path: routeCoordinates,
-                        geodesic: true,
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 1.0,
-                        strokeWeight: 4
+                      path: routeCoordinates,
+                      geodesic: true,
+                      strokeColor: '#FF0000',
+                      strokeOpacity: 1.0,
+                      strokeWeight: 4
                     });
             		routePath.setMap(map);
+            		gRouteLines.push(routePath);
             		routeCoordinates = [];
             	}
+            }
+			
+			removeRouteLinesFromMap: function() {
+                for (var i = 0; i < gRouteLines.length; i++)
+                    gRouteLines[i].setMap(null);
+				gRouteLines = null;
             }
 
             //endregion
