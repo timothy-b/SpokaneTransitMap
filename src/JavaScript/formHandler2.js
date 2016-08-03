@@ -5,10 +5,10 @@
 var mapper;
 $(document).ready(function ()
 {
-	//var options = {types: ['establishment']};
-	//var input = document.getElementById('idStopName');
+	var options = {types: ['establishment','geocode']};
+	var input = document.getElementById('idStopName');
 
-	//var autocomplete = new google.maps.places.Autocomplete(input, options);
+	var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 	mapper = Mapper.getInstance();
 
@@ -22,16 +22,85 @@ $(document).ready(function ()
 function onSubmit(event)
 {
 	event.preventDefault();
-	var name = $("#idStopName").val();
-	var data =
+	if(validateDateTime() == true && validateRadius()==true/* && validateName() == true */)
 	{
-		url: '../Controllers/getCoordsFromInput.php',
-		type: 'get',
-		dataType: "json",
-		data: { identifier: name },
-		success: onPlaceQuerySuccess
-	};
-	$.ajax(data);
+		var name = $("#idStopName").val();
+		var data =
+		{
+			url: '../eday/getCoordsFromInput.php',
+			type: 'get',
+			dataType: "json",
+			data: { identifier: name },
+			success: onPlaceQuerySuccess
+		};
+		$.ajax(data);
+	}
+	
+	else if(validateDateTime() == true && validateRadius()== false/*&& validateName() == true */) {
+		alert("Please enter a radius greater than 9");
+	}
+	
+	else if(validateDateTime() == false && validateRadius() == true /* && validateName() == true */) {
+		alert("Please enter a valid furute date/time combination");
+	}
+
+	/*else if(validateDateTime() == true && validateRadius() == true && validateName() == false ) {
+		alert("please enter a valid location");
+	}
+	
+	else if(validateDateTime() == false && validateRadius() == false  && validateName() == true )
+	{
+		alert("Please enter a valid future date/time combination and a radius greater than 9");
+	}
+	
+	else if(validateDateTime() == false && validateRadius() == true  && validateName() == false )
+	{
+		alert("Please enter a valid future date/time combination and a valid location");
+	} 
+	else if(validateDateTime() == true && validateRadius() == false && validateName() == false ) {
+		alert("Please enter a radius greater than 9 and a valid location");
+	} */
+	else
+	{
+		alert("Please enter information in the fields");
+	}
+
+}
+
+function validateName()
+{
+	//display alert when name cannot be matched to place
+}
+
+function validateDateTime()
+{	
+		var currentDate = new Date();
+		var inputDate = new Date($("#idStopTime").val());
+		if(inputDate == "Invalid Date") {
+			return false;
+		}
+		
+		else if(inputDate < currentDate) {
+			return false;
+			}
+			
+		else 
+		{
+			return true;
+		}
+}
+
+
+function validateRadius()
+{
+	if($("#idStopRadius").val() < 10)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 //TODO: fix so that stops continuously load, 100 at a time
