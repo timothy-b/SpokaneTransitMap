@@ -13,6 +13,9 @@ var Mapper = (function(){
         var gRouteNameIdDict = {};
         var gMarkerYou;
 
+
+
+
         //endregion
 
         return {
@@ -23,7 +26,6 @@ var Mapper = (function(){
                     center: {lat: 47.492512, lng: -117.58387500000003},
                     zoom: 14
             })},
-
 
             setMap: function (map){
                 this.map = map;
@@ -67,6 +69,14 @@ var Mapper = (function(){
                     icon: "./bus.png",
                     route_numbers: stop.routes_serving_stop
                 });
+                marker.addListener('click',function() {
+                    console.log(this);
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: "<input type=\"button\" onclick=\"mapper.showPromptSaveMarker(\'" + stop.onestop_id + "\')\" value=\"Save Stop\"/>"
+                    });
+                    infowindow.open(map,marker);
+                });
 
                 marker.addListener('click', this.onMarkerClicked);
                 return marker;
@@ -105,6 +115,14 @@ var Mapper = (function(){
             showMarkers: function(){
                 for (var i = 0; i < gMarkers.length; i++)
                     gMarkers[i].setMap(map);
+            },
+
+            showPromptSaveMarker: function(onestop_id)
+            {
+                var sname = prompt("Please enter the stop name");
+                if (sname != null && sname != "") {
+                    document.cookie = sname + "=" + onestop_id;
+                }
             },
 
             //endregion markers

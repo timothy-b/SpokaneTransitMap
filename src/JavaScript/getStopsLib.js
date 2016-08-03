@@ -17,7 +17,7 @@ function click_A_Marker(){
 		});
 	//map.setZoom(9);
 	//map.setCenter(marker.getPosition());
-  });
+  //)};
 }
 
 function showPrompt($la, $lo)
