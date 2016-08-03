@@ -42,7 +42,7 @@ require_once('../Credentials/doNotUpload.php');
 
 			<input class="form-control" type="text" name="stopName" id="idStopName" placeholder="Search Places"><br>
 
-			<input class="form-control hidden" type="datetime-local" name="stopTime" id="idStopTime">
+			<input class="form-control" type="datetime-local" name="stopTime" id="idStopTime">
 
 			<input class="form-control" type="number" name="stopRadius" id="idStopRadius" placeholder="Radius (meters)"><br>
 
