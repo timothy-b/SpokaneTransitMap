@@ -12,10 +12,6 @@ var Mapper = (function(){
         var gMarkers = [];
         var gRouteNameIdDict = {};
         var gMarkerYou;
-
-
-
-
         //endregion
 
         return {
@@ -181,14 +177,12 @@ var Mapper = (function(){
 
             //endregion
 
-
             //endregion public
         };
     }
 
     return {
-        // Get the Singleton instance if one exists
-        // or create one if it doesn't
+        // Get the Singleton instance if one exists or create one if it doesn't
         getInstance: function () {
             if ( !instance )
                 instance = init();
