@@ -10,6 +10,7 @@ require_once('../Credentials/doNotUpload.php');
 	<head>
 		<title>STA Project Stop Info</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&libraries=places"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&callback=mapper.initMap" async defer></script>
 		<script src="../JavaScript/mapper3.js"></script>
 		<script src="../JavaScript/formHandler2.js"></script>
