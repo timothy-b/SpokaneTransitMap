@@ -65,9 +65,9 @@ var Mapper = (function(){
                     icon: "./bus.png",
                     route_numbers: stop.routes_serving_stop
                 });
+                console.log("marker:");
+                console.log(marker);
                 marker.addListener('click',function() {
-                    console.log(this);
-
                     var infowindow = new google.maps.InfoWindow({
                         content: "<input type=\"button\" onclick=\"mapper.showPromptSaveMarker(\'" + stop.onestop_id + "\')\" value=\"Save Stop\"/>"
                     });

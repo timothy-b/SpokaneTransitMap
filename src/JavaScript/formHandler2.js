@@ -3,12 +3,12 @@
  */
 
 var mapper;
-$(document).ready(function ()
-{
+var thing = "stuff";
+$(document).ready(function (){
 	var options = {types: ['establishment','geocode']};
 	var input = document.getElementById('idStopName');
 
-	var autocomplete = new google.maps.places.Autocomplete(input, options);
+	//var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 	mapper = Mapper.getInstance();
 
@@ -17,25 +17,34 @@ $(document).ready(function ()
 	$("#butShowMarkers").click(mapper.showMarkers);
 	$("#butShowMarkersByID").click(mapper.showRoutesByRouteId);
 	$("#sel_route_id").attr("oninput", "mapper.showRoutesByRouteId()");
+
+	console.log("ready");
 });
 
-function onSubmit(event)
+function onSubmit(event) {
+	event.preventDefault();
+	console.log('onSubmit');
+
+	var name = $("#idStopName").val();
+	var data =
+	{
+		url: '../Controllers/getCoordsFromInput.php',
+		type: 'get',
+		dataType: "json",
+		data: {identifier: name},
+		success: onPlaceQuerySuccess
+	};
+	$.ajax(data);
+}
+
+function onSubmit2(event)
 {
 	event.preventDefault();
 	if(validateDateTime() == true && validateRadius()==true/* && validateName() == true */)
 	{
-		var name = $("#idStopName").val();
-		var data =
-		{
-			url: '../eday/getCoordsFromInput.php',
-			type: 'get',
-			dataType: "json",
-			data: { identifier: name },
-			success: onPlaceQuerySuccess
-		};
-		$.ajax(data);
+
 	}
-	
+
 	else if(validateDateTime() == true && validateRadius()== false/*&& validateName() == true */) {
 		alert("Please enter a radius greater than 9");
 	}
