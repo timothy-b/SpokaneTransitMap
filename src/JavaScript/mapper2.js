@@ -1,5 +1,6 @@
 /**
  * @summary Sets up the map and handles programmatic interaction with it.
+ * @deprecated and to be deleted shortly...
  */
 
 var map;
@@ -39,7 +40,7 @@ function addNewMarkers(json){
     gMarkers = gMarkers.concat(newMarkers);
 }
 
-function addYouAreHereMarker(lat, lng){
+function updateYouAreHereMarker(lat, lng){
     if (gMarkerYou != null)
         gMarkerYou.setMap(null);
 

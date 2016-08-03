@@ -1,17 +1,22 @@
 /**
  * @summary Handles user interaction with the forms and makes AJAX calls
- * @deprecated and to be deleted shortly...
  */
 
+var mapper;
 $(document).ready(function ()
 {
 	//var options = {types: ['establishment']};
 	//var input = document.getElementById('idStopName');
-	
+
 	//var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+	mapper = Mapper.getInstance();
+
 	$("#btnStopInformation").click(onSubmit);
-
-
+	$("#butHideMarkers").click(mapper.hideMarkers);
+	$("#butShowMarkers").click(mapper.showMarkers);
+	$("#butShowMarkersByID").click(mapper.showRoutesByRouteId);
+	$("#sel_route_id").attr("oninput", "mapper.showRoutesByRouteId()");
 });
 
 function onSubmit(event)
@@ -38,7 +43,7 @@ function onPlaceQuerySuccess(response){
 	var lat = result.geometry.location.lat;
 	var lng = result.geometry.location.lng;
 
-	updateYouAreHereMarker(lat,lng);
+	mapper.addYouAreHereMarker(lat,lng);
 
 	var radius = $("#idStopRadius").val();
 
@@ -55,12 +60,11 @@ function onPlaceQuerySuccess(response){
 function onStopsQuerySuccess(response){
 	console.log("got stops:");
 	console.log(response);
-	removeMarkersFromMap();
-	addNewStops(response);
+	mapper.removeMarkersFromMap();
+	mapper.addNewStops(response);
 }
 
 function buildStopsURL (lat, lon, rad ){
-	var stops_TL_API_call = "https://transit.land/api/v1/stops?lat=" +
+	return "https://transit.land/api/v1/stops?lat=" +
 		lat + "&lon=" + lon + "&r=" + rad + "&per_page=2500";
-	return stops_TL_API_call;
 }
