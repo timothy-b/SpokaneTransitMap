@@ -12,6 +12,7 @@ var Mapper = (function(){
         var gMarkers = [];
         var gRouteNameIdDict = {};
         var gMarkerYou;
+        var gRouteLines = [];
         //endregion
 
         return {
@@ -176,7 +177,7 @@ var Mapper = (function(){
             },
             
             drawRoutePolyLines: function(json){
-            	var data = json.route_stop_patterns;
+                var data = json.route_stop_patterns;
             	var routeCoordinates = [];
             	var x = 3;
             	for(var x = 0; x < data.length; x++)
@@ -184,13 +185,14 @@ var Mapper = (function(){
             		for(var y = 0; y < data[x].geometry.coordinates.length; y++)
             		{
             			var coords = {lat:data[x].geometry.coordinates[y][1],lng:data[x].geometry.coordinates[y][0]};
+            			routeCoordinates.push(coords)
             		}
             		var routePath = new google.maps.Polyline({
-                      path: routeCoordinates,
-                      geodesic: true,
-                      strokeColor: '#FF0000',
-                      strokeOpacity: 1.0,
-                      strokeWeight: 4
+                        path: routeCoordinates,
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 4
                     });
             		routePath.setMap(map);
             		routeCoordinates = [];
