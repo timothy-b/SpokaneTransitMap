@@ -13,6 +13,7 @@ var Mapper = (function(){
         var gRouteNameIdDict = {};
         var gMarkerYou;
         var gRouteLines = [];
+        var _path = "";
         //endregion
 
         return {
@@ -26,6 +27,10 @@ var Mapper = (function(){
 
             setMap: function (map){
                 this.map = map;
+            },
+
+            setPath: function(path){
+                _path = path;
             },
 
             addNewStops: function(json) {
@@ -52,7 +57,7 @@ var Mapper = (function(){
 
                 gMarkerYou = new google.maps.Marker({
                     position: new google.maps.LatLng(lat, lng),
-                    icon: "./you.png"
+                    icon: _path + "../Views/you.png"
                 });
 
                 gMarkerYou.setMap(map);
@@ -63,9 +68,10 @@ var Mapper = (function(){
                 var marker = new google.maps.Marker({
                     position: latLng,
                     title: stop.name,
-                    icon: "./bus.png",
+                    icon: _path + "../Views/bus.png",
                     route_numbers: stop.routes_serving_stop
                 });
+
                 marker.addListener('click',function() {
                     console.log(this);
 

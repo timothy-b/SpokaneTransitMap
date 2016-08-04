@@ -15,7 +15,7 @@ var thing = "stuff";
 	$("#btnStopInformation").click(onSubmit);
 	$("#butHideMarkers").click(mapper.hideMarkers);
 	$("#butShowMarkers").click(mapper.showMarkers);
-	$("#butShowMarkersByID").click(mapper.showRoutesByRouteId);
+
 	$("#sel_route_id").attr("oninput", "mapper.showRoutesByRouteId()");
 
 	console.log("ready");
