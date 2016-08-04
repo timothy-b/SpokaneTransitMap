@@ -10,8 +10,15 @@ require_once('../../Credentials/doNotUpload.php');
 <html>
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-		<script src="../../JavaScript/mapper.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY ?>&callback=initMap" async defer></script>
+		<script src="../../JavaScript/mapper.js" async defer></script>
+		<script src="../../JavaScript/formHandler.js" async defer></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY ?>&callback=mapper.initMap" async defer></script>
+		<script defer>
+			$(document).ready(function(){
+				$("#idStopName").click();
+			});
+
+		</script>
 		<title>Simple Map</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
@@ -27,9 +34,12 @@ require_once('../../Credentials/doNotUpload.php');
 		</style>
 	</head>
 	<body>
+		<input type="hidden" id="idStopName" value="Cheney, Wa">
+		<input type="hidden" id="idStopRadius" value="50000">
+		<input type="hidden" id="btnStopInformation">
 		<input type="button" id="butHideMarkers" value="Hide Markers">
 		<input type="button" id="butShowMarkers" value="Show Markers">
-		<select id="route_id">
+		<select id="sel_route_id">
 			<option value="r-c2krpu-1">1</option>
 			<option value="r-c2kx04-2">2</option>
 			<option value="r-c2krp-20">20</option>
@@ -64,6 +74,6 @@ require_once('../../Credentials/doNotUpload.php');
 			<option value="r-c2kx-173">173</option>
 		</select>
 		<input type="button" id="butShowMarkersByID" value="Show Markers By ID">
-		<div id="map"></div>
+		<div id="divGMap" style="height:100%;"></div>
 	</body>
 </html>

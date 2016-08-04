@@ -13,15 +13,7 @@ require_once('../Credentials/doNotUpload.php');
 		<!--
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&libraries=places"></script>
 		-->
-		<script src="../JavaScript/mapper3.js"></script>
-		<script src="../JavaScript/formHandler2.js"></script>
-		<script>
-			$(document).ready(function(){
-			console.log(thing);
-			console.log(mapper);
-			});
-		</script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&callback=mapper.initMap" async defer></script>
+
 
 
 		<script src="../../js/bootstrap.min.js"></script>
@@ -66,4 +58,14 @@ require_once('../Credentials/doNotUpload.php');
 	</div>
 
 	</body>
+
+	<script src="../JavaScript/mapper.js"></script>
+	<script src="../JavaScript/formHandler.js"></script>
+	<script>
+		$(document).ready(function(){
+			console.log(thing);
+			console.log(mapper);
+		});
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&callback=mapper.initMap" async defer></script>
 </html>

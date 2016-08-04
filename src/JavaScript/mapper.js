@@ -1,92 +1,226 @@
-var map;
-var markers = [];
+/**
+ * @summary Sets up the map and handles programmatic interaction with it.
+ */
 
-function initMap()
-{
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 47.492512, lng: -117.58387500000003},
-		zoom: 14
-	});
-}
+var Mapper = (function(){
+    var instance;
 
-$(document).ready(function() {
-	$("#butHideMarkers").click(hideMarkers);
-	$("#butShowMarkers").click(showMarkers);
-	$("#butShowMarkersByID").click(function(){hideMarkers(); showByIdClicked();});
-	$.get("https://transit.land/api/v1/stops?lat=47.492512&lon=-117.58387500000003&r=100000&per_page=2500", parseData)
-	//$.get("https://transit.land/api/v1/stops.json?served_by=o-c2kx-spokanetransitauthority&per_page=1000", parseData);
-	//$.get("https://transit.land/api/v1/stops.geojson?served_by=o-c2kx-spokanetransitauthority", parseData);
-});
+    function init(){
 
-function showByIdClicked()
-{
-	showRoutesByRouteID($("#route_id").val());
-}
+        //region private
+        var map;
+        var gMarkers = [];
+        var gRouteNameIdDict = {};
+        var gMarkerYou;
+        var gRouteLines = [];
+        //endregion
 
-function addStop(stopName, latLng, stops)
-{
-	var marker = new google.maps.Marker({
-		position: latLng,
-		map:map,
-		title: stopName,
-		icon: "../../Views/bus.png",
-		route_numbers: stops
-	});
-	markers.push(marker);
-	marker.addListener('click', markerClicked);
-}
+        return {
+            //region public
 
-function showRoutesByRouteID(id)
-{
-	for (var i = 0; i < markers.length; i++)
-	{
-		for(var x = 0; x < markers[i].route_numbers.length; x++)
-			if(markers[i].route_numbers[x][1] === id)
-				markers[i].setMap(map);
-	}
-}
+            initMap: function(){
+                map = new google.maps.Map(document.getElementById('divGMap'), {
+                    center: {lat: 47.492512, lng: -117.58387500000003},
+                    zoom: 14
+            })},
 
-function showMarkers(id)
-{
-	for (var i = 0; i < markers.length; i++)
-	{
-		markers[i].setMap(map);
-	}
-}
+            setMap: function (map){
+                this.map = map;
+            },
 
-function parseData(json)
-{
-	var data = json.stops;
-	for(var x = 0; x < data.length; x++)
-	{
-		var name = data[x].name;
-		var latLng = new google.maps.LatLng(data[x].geometry.coordinates[1], data[x].geometry.coordinates[0]);
-		var stops = [];
-		for(var y = 0; y < data[x].routes_serving_stop.length; y++)
-		{
-			stops.push([data[x].routes_serving_stop[y].route_name,data[x].routes_serving_stop[y].route_onestop_id]);
-		}
-		addStop(name,latLng,stops);
-	}
-}
+            addNewStops: function(json) {
+                this.addNewMarkers(json);
+                this.showMarkers();
 
-function hideMarkers()
-{
-	for (var i = 0; i < markers.length; i++)
-	{
-		markers[i].setMap(null);
-	}
-}
+                this.addNewRouteIds(json);
+                this.updateDropdownRouteIds();
+            },
 
-function markerClicked()
-{
-	var str = "Routes: ";
-	for(var x = 0; x < this.route_numbers.length; x++)
-	{
-		str += this.route_numbers[x][0];
-		if(x < (this.route_numbers.length - 1))
-		str += ", ";
-	}
-	var infowindow = new google.maps.InfoWindow({content: this.title + "<br>" + this.getPosition().lat() + " " + this.getPosition().lng() + "<br>" + str});
-	infowindow.open(map,this);
-}
+
+            //region marker methods
+
+            addNewMarkers: function(json) {
+                if (gMarkers == null)
+                    gMarkers = [];
+                var newMarkers = this.getMarkersFromStopsRequest(json);
+                gMarkers = gMarkers.concat(newMarkers);
+            },
+
+            addYouAreHereMarker: function(lat, lng) {
+                if (gMarkerYou != null)
+                    gMarkerYou.setMap(null);
+
+                gMarkerYou = new google.maps.Marker({
+                    position: new google.maps.LatLng(lat, lng),
+                    icon: "./you.png"
+                });
+
+                gMarkerYou.setMap(map);
+            },
+
+            buildStopMarker: function(stop) {
+                var latLng = new google.maps.LatLng(stop.geometry.coordinates[1], stop.geometry.coordinates[0]);
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    title: stop.name,
+                    icon: "./bus.png",
+                    route_numbers: stop.routes_serving_stop
+                });
+                marker.addListener('click',function() {
+                    console.log(this);
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: "<input type=\"button\" onclick=\"mapper.showPromptSaveMarker(\'" + stop.onestop_id + "\')\" value=\"Save Stop\"/>"
+                    });
+                    infowindow.open(map,marker);
+                });
+
+                marker.addListener('click', this.onMarkerClicked);
+                return marker;
+            },
+
+            getMarkersFromStopsRequest: function(json) {
+                if (!json.hasOwnProperty('stops')) {
+                    console.error('PropertyNotFoundException: stops\n in the following object:');
+                    console.error(json);
+                    return null;
+                }
+
+                var markers = [];
+                for (var i = 0; i < json.stops.length; i++) {
+                    markers.push(this.buildStopMarker(json.stops[i]));
+                }
+                return markers;
+            },
+
+            hideMarkers: function() {
+                for (var i = 0; i < gMarkers.length; i++)
+                    gMarkers[i].setMap(null);
+            },
+
+            onMarkerClicked: function(){
+                var infowindow = new google.maps.InfoWindow({content: this.title + "<br>" + this.getPosition().lat() + "<br>" + this.getPosition().lng() + "<br>"});
+                infowindow.open(map,this);
+            },
+
+            removeMarkersFromMap: function(){
+                this.hideMarkers();
+                gMarkers = null;
+                gRouteNameIdDict = null;
+            },
+
+            showMarkers: function(){
+                for (var i = 0; i < gMarkers.length; i++)
+                    gMarkers[i].setMap(map);
+            },
+
+            showPromptSaveMarker: function(onestop_id)
+            {
+                var sname = prompt("Please enter the stop name");
+                if (sname != null && sname != "") {
+                    document.cookie = sname + "=" + onestop_id + "; expires=Thu, 18 Dec 2200 12:00:00 UTC; path=/";
+                }
+            },
+
+            //endregion markers
+
+            //region routes
+
+            addNewRouteIds: function(json){
+                if (gRouteNameIdDict == null)
+                    gRouteNameIdDict = {};
+                var newRouteIds = this.getNewRouteIds(json);
+                for (var newRouteId in newRouteIds)
+                    gRouteNameIdDict[newRouteId] = newRouteIds[newRouteId];
+            },
+
+            getNewRouteIds: function(json){
+                var newRouteIds = {};
+
+                for (var s = 0; s < json.stops.length; s++) {
+                    var stop = json.stops[s];
+                    for (var r = 0; r < stop.routes_serving_stop.length; r++) {
+                        var route = stop.routes_serving_stop[r];
+                        newRouteIds[route.route_onestop_id] = route.route_name;
+                    }
+                }
+                console.log(newRouteIds);
+                return newRouteIds;
+            },
+
+            showRoutesByRouteId: function(){
+                Mapper.getInstance().hideMarkers();
+
+                var selectedId = $('#sel_route_id').find(":selected").val();
+
+                for (var i = 0; i < gMarkers.length; i++) {
+                    for (var j = 0; j < gMarkers[i].route_numbers.length; j++) {
+                        if (gMarkers[i].route_numbers[j].route_onestop_id.includes(selectedId)) {
+                            gMarkers[i].setMap(map);
+                            break;
+                        }
+                    }
+                }
+            },
+
+            updateDropdownRouteIds: function(){
+                var $dropdown = $("#sel_route_id");
+                $dropdown.html("");
+
+                var sortableRoutes = [];
+                for (var routeId in gRouteNameIdDict)
+                    sortableRoutes.push([routeId, gRouteNameIdDict[routeId]]);
+                sortableRoutes.sort( function(a,b){return a[1].localeCompare(b[1],'kn', {numeric: true});} );
+
+                for (var i = 0; i < sortableRoutes.length; i++)
+                    $dropdown.append("<option value=\""+ sortableRoutes[i][0] +"\">"+ sortableRoutes[i][1] + "</option>");
+            },
+            
+            drawRoutePolyLines: function(json){
+		if (gRouteLines == null)
+                    gRouteLines = [];
+            	var routePattern = json.route_stop_patterns;
+            	var routeCoordinates = [];
+            	for(var x = 0; x < routePattern.length; x++)
+            	{
+            		for(var y = 0; y < routePattern[x].geometry.coordinates.length; y++)
+            		{
+            			var coordinates = {lat:routePattern[x].geometry.coordinates[y][1],lng:routePattern[x].geometry.coordinates[y][0]};
+						routeCoordinates.push(coordinates);
+            		}
+            		var routePath = new google.maps.Polyline({
+                      		path: routeCoordinates,
+                      		geodesic: true,
+                      		strokeColor: '#FF0000',
+                		strokeOpacity: 1.0,
+                	     	strokeWeight: 4
+                    	});
+            		routePath.setMap(map);
+            		gRouteLines.push(routePath);
+            		routeCoordinates = [];
+     		}
+        },
+			
+	    removeRouteLinesFromMap: function() {
+        	for (var i = 0; i < gRouteLines.length; i++)
+                     gRouteLines[i].setMap(null);
+		gRouteLines = null;
+            }
+
+            //endregion
+
+            //endregion public
+        };
+    }
+
+    return {
+        // Get the Singleton instance if one exists or create one if it doesn't
+        getInstance: function () {
+            console.log("Mapper.getInstance()");
+            if ( !instance )
+                instance = init();
+
+            return instance;
+        }
+    };
+})();
