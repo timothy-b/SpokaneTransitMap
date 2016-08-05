@@ -13,6 +13,7 @@ var Mapper = (function(){
         var gRouteNameIdDict = {};
         var gMarkerYou;
         var gRouteLines = [];
+        vare gTraffic;
         var _path = "";
         //endregion
 
@@ -129,7 +130,25 @@ var Mapper = (function(){
             },
 
             //endregion markers
-
+	    
+	    //region traffic
+	    
+	    toggleTraffic: function()
+	    {
+		if(gTraffic == null)
+		{
+	   	    gTraffic = new google.maps.TrafficLayer();
+		    gTraffic.setMap(map);
+		}
+		else
+		{
+		    gTraffic.setMap(null);
+		    gTraffic = null;
+		}
+	    },
+	    
+	    //endregion
+	    
             //region routes
 
             addNewRouteIds: function(json){
