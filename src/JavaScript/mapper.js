@@ -13,7 +13,7 @@ var Mapper = (function(){
         var gRouteNameIdDict = {};
         var gMarkerYou;
         var gRouteLines = [];
-        vare gTraffic;
+        var gTraffic;
         var _path = "";
         //endregion
 
