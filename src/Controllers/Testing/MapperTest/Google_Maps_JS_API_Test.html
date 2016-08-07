@@ -2,7 +2,17 @@
 <html>
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=<API KEY HERE>&callback=initMap" async defer></script>
+		<script>
+			$(document).ready(function(){
+				var data = {
+					url: '../../loadGMapsJs.php',
+					type: 'GET',
+					dataType: "script",
+					data: {callback:'initMap'}
+				};
+				$.ajax(data);
+			});
+		</script>
 		<script src="mapper.js"></script>
 		<title>Simple Map</title>
 		<meta name="viewport" content="initial-scale=1.0">

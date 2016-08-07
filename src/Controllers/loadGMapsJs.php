@@ -1,11 +1,7 @@
 <?php
-
 /**
- * API Service: Makes a request from the Google Maps API to match a GPS coordinate to match place name to GPS coordinates
- * @param string identifier a name or identifier of a geographical location
- * @return JSON GPS coordinates
+ * Use this to prevent clientside exposure of the Google Maps Javasctiot API key.
  */
-
 require_once("../Credentials/doNotUpload.php");
 
 function validate()
@@ -15,18 +11,16 @@ function validate()
         die('only GET requests are accepted');
     }
 
-    if (!isset($_GET['identifier'])) {
+    if (!isset($_GET['callback'])) {
         http_response_code(400);
-        die('key \'identifier\' not set');
+        die('key \'callback\' not set');
     }
 }
 
 function sendRequest()
 {
-
-    $identifier = urlencode($_GET['identifier']);
-
-    $url = "https://maps.googleapis.com/maps/api/place/textsearch/json?key=" . GMAPS_JS_API_KEY . "&query=$identifier";
+    $callback = urlencode($_GET['callback']);
+    $url = "https://maps.googleapis.com/maps/api/js?key=".GMAPS_JS_API_KEY."&callback=$callback";
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);

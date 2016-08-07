@@ -13,6 +13,17 @@ require_once('../Credentials/doNotUpload.php');
 		<!--
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&libraries=places"></script>
 		-->
+		<script>
+			$(document).ready(function(){
+				var data = {
+					url: '../Controllers/loadGMapsJs.php',
+					type: 'GET',
+					dataType: "script",
+					data: {callback:'mapper.initMap'}
+				};
+				$.ajax(data);
+			});
+		</script>
 
 
 

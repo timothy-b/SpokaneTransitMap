@@ -12,7 +12,17 @@ require_once('../../Credentials/doNotUpload.php');
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="../../JavaScript/mapper.js" async defer></script>
 		<script src="../../JavaScript/formHandler.js" async defer></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY ?>&callback=mapper.initMap" async defer></script>
+		<script>
+			$(document).ready(function(){
+				var data = {
+					url: '../loadGMapsJs.php',
+					type: 'GET',
+					dataType: "script",
+					data: {callback:'mapper.initMap'}
+				};
+				$.ajax(data);
+			});
+		</script>
 		<script async defer>
 			$(document).ready(function(){
 				loadMap();
