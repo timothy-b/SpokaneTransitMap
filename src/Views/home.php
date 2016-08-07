@@ -64,7 +64,7 @@ require_once('../Credentials/doNotUpload.php');
 
 		</div>
 
-		<div id="divMap" ><?php include_once("../Views/map.php")?></div>
+		<div id="divMap" ><?php include_once("../Views/map.html") ?></div>
 
 	</div>
 

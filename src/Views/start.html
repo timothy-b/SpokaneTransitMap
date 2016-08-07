@@ -3,6 +3,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
+    <script src="../JavaScript/start.js" async defer></script>
 
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/font-awesome.min.css">
@@ -36,8 +37,10 @@
     <div class="row" style="opacity:1;">
         <div class="col-xs-12">
             <div class="form-group has-feedback form-group-lg" >
-                <input type="text" class="form-control input-lg" placeholder="Destination" style="height:8vh; font-size: 5vh;">
+                <form action="mapView.html" method="get">
+                <input id="inputSearch" name="destination" type="text" class="form-control input-lg" placeholder="Destination" style="height:8vh; font-size: 5vh;">
                 <i class="form-control-feedback fa fa-search fa-2x" style="line-height:1.5em; padding-right:1.2em; font-size: 5vh;"></i>
+                </form>
             </div>
         </div>
     </div>

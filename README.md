@@ -4,8 +4,9 @@
 _Using php7 with [PHPstorm](https://www.jetbrains.com/student/)_
 
 ####Live project links:
+&emsp;[new project startpage](http://timothy-b.com/SpokaneTransitMap/src/Views/start.html)
 
-&emsp;[Project homepage](http://timothy-b.com/SpokaneTransitMap/src/Views/home.php)
+&emsp;[old project homepage](http://timothy-b.com/SpokaneTransitMap/src/Views/home.php)
 
 &emsp;[Project directory](http://timothy-b.com/SpokaneTransitMap/)
 
