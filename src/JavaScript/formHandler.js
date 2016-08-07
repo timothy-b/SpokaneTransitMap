@@ -3,7 +3,7 @@
  */
 
 var mapper;
-var thing = "stuff";
+
 //$(document).ready(function (){
 	var options = {types: ['establishment','geocode']};
 	var input = document.getElementById('idStopName');

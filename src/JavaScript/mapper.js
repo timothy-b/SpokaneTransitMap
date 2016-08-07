@@ -1,7 +1,6 @@
 /**
- * @summary Sets up the map and handles programmatic interaction with it.
+ * @summary Singleton which sets up the map and handles programmatic interaction with it.
  */
-
 var Mapper = (function(){
     var instance;
 
@@ -26,8 +25,8 @@ var Mapper = (function(){
                     zoom: 14
             })},
 
-            setMap: function (map){
-                this.map = map;
+            setMap: function (mapToSet){
+                map = mapToSet;
             },
 
             setPath: function(path){
@@ -40,6 +39,8 @@ var Mapper = (function(){
 
                 this.addNewRouteIds(json);
                 this.updateDropdownRouteIds();
+                console.log("added new stops");
+                console.log(map);
             },
 
 
@@ -58,7 +59,7 @@ var Mapper = (function(){
 
                 gMarkerYou = new google.maps.Marker({
                     position: new google.maps.LatLng(lat, lng),
-                    icon: _path + "../Views/you.png"
+                    icon: _path + "../Views/img/you.png"
                 });
 
                 gMarkerYou.setMap(map);
@@ -69,7 +70,7 @@ var Mapper = (function(){
                 var marker = new google.maps.Marker({
                     position: latLng,
                     title: stop.name,
-                    icon: _path + "../Views/bus.png",
+                    icon: _path + "../Views/img/bus.png",
                     route_numbers: stop.routes_serving_stop
                 });
 
@@ -131,23 +132,23 @@ var Mapper = (function(){
 
             //endregion markers
 	    
-	    //region traffic
-	    
-	    toggleTraffic: function()
-	    {
-		if(gTraffic == null)
-		{
-	   	    gTraffic = new google.maps.TrafficLayer();
-		    gTraffic.setMap(map);
-		}
-		else
-		{
-		    gTraffic.setMap(null);
-		    gTraffic = null;
-		}
-	    },
-	    
-	    //endregion
+            //region traffic
+
+            toggleTraffic: function()
+            {
+            if(gTraffic == null)
+            {
+                gTraffic = new google.maps.TrafficLayer();
+                gTraffic.setMap(map);
+            }
+            else
+            {
+                gTraffic.setMap(null);
+                gTraffic = null;
+            }
+            },
+
+            //endregion
 	    
             //region routes
 

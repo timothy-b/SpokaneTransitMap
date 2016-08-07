@@ -6,114 +6,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/jquery.query-object.js"></script>
-    <script type="text/javascript">
-        console.log("map.html");
-        var queryString = location.search;
-        var map;
-        var placeData;
-        var searchBox;
-
-        $(document).ready(function(){
-            if (queryString == null)    //show the map
-                console.log("no querystring");
-
-            else if (queryString.includes('destination=')) { //find the stops around a destination
-                var destination = $.query.get('destination');
-                console.log(destination);
-                $("#inputSearch").val(destination);
-                getPlaceData(destination);
-            }
-        });
-
-        function getCoordsFromPlace(placeData){
-            return {lat: placeData.geometry.location.lat,
-                    lng: placeData.geometry.location.lng};
-        }
-
-        function loadMap(latitude, longitude){
-            var data = {
-                url: '../Controllers/loadGMapsJs.php',
-                type: 'GET',
-                dataType: "script",
-                data: {callback:'initMap'}
-            };
-            $.ajax(data);
-        }
-
-        function initMap() {
-            var coords = getCoordsFromPlace(placeData[0]);
-            map = new google.maps.Map(document.getElementById('divGMap'), {
-                center: {lat: coords.lat, lng: coords.lng},
-                zoom: 11,
-                mapTypeControlOptions: {
-                    position: google.maps.ControlPosition.LEFT_BOTTOM
-                }
-            });
-
-            searchBox = buildSearchBox();
-            var placeName = placeData[0].formatted_address;
-            $(searchBox).find('input').val(placeName);
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchBox);
-        }
-
-        function buildSearchBox(){
-            var container = document.createElement('div');
-            var _searchBox = document.createElement('input');
-            $(_searchBox).addClass('form-control');
-            _searchBox.type = "text";
-            _searchBox.id = "inputSearch";
-            _searchBox.name = "destination";
-            _searchBox.style.width = "392px";
-            _searchBox.style.marginLeft = "8px";
-            _searchBox.style.marginTop = "8px";
-            $(_searchBox).attr("placeholder", "Search Places");
-            container.appendChild(_searchBox);
-            return container;
-        }
-
-        function getPlaceData(placeName){
-            var data =
-            {
-                url: '../Controllers/getCoordsFromInput.php',
-                type: 'get',
-                dataType: "json",
-                data: {identifier: placeName},
-                success: onPlaceQuerySuccess
-            };
-            $.ajax(data);
-        }
-
-        function onPlaceQuerySuccess(response){
-            console.log("got place: ");
-            console.log(response);
-            placeData = response.results;
-            displayPlace(response.results);
-        }
-
-        var curPlaceResultNum = -1;
-        function displayPlace(placeData){
-            var curPlace = placeData[++curPlaceResultNum];
-            var coords = getCoordsFromPlace(curPlace);
-            loadMap(coords.lat, coords.lng);
-
-        }
-
-    </script>
+    <script src="../JavaScript/mapper.js"></script>
+    <script src="../JavaScript/map.js"></script>
 
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/material-icons-min.css">
+    <link rel="stylesheet" href="./css/map.css">
 
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #divGMap {
-            height: 100%;
-        }
-    </style>
 </head>
 <body>
 
