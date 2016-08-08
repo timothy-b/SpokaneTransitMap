@@ -6,24 +6,32 @@ var mapper = Mapper.getInstance();
 
 $(document).ready(function(){
     if (queryString == null || queryString == "") {    //show the map
-        console.log("no querystring");
-        loadPlaceData();
-        loadMap(47.6587802, -117.4260466);
+        loadSpokanePlaceData();
+        loadMap();
     }
 
     if (queryString.includes('showAllStops=true')){
-        loadPlaceData();
-        loadMap(47.6587802, -117.4260466, function(){loadStops(47.6587802, -117.4260466, 40000);});
-
+        loadSpokanePlaceData();
+        loadMap(function(){loadStops(47.6587802, -117.4260466, 40000);});
     }
 
     else if (queryString.includes('destination=')) { //find the stops around a destination
         var destination = $.query.get('destination');
-        console.log(destination);
         $("#inputSearch").val(destination);
         getPlaceData(destination, onFirstPlaceQuerySuccess);
     }
 });
+
+function loadMap(onSuccess){
+    var data = {
+        url: '../Controllers/loadGMapsJs.php',
+        type: 'GET',
+        dataType: "script",
+        data: {callback:'initMap'},
+        success: onSuccess
+    };
+    $.ajax(data);
+}
 
 function loadStops(latitude, longitude, radius){
     var data = {
@@ -32,8 +40,12 @@ function loadStops(latitude, longitude, radius){
         dataType: 'json',
         success: onStopsQuerySuccess
     };
-
     $.ajax(data);
+}
+
+function buildStopsURL (lat, lon, rad ){
+    return "https://transit.land/api/v1/stops?lat=" +
+        lat + "&lon=" + lon + "&r=" + rad + "&per_page=2500";
 }
 
 function onStopsQuerySuccess(response){
@@ -42,14 +54,12 @@ function onStopsQuerySuccess(response){
 
     mapper.removeMarkersFromMap();
     mapper.addNewStops(response);
+    var $buttons = $("#togglePane").find(':checkbox');
+    $buttons.bootstrapSwitch('disabled', false);
+    //$buttons.bootstrapSwitch('state', true, true);
 }
 
-function buildStopsURL (lat, lon, rad ){
-    return "https://transit.land/api/v1/stops?lat=" +
-        lat + "&lon=" + lon + "&r=" + rad + "&per_page=2500";
-}
-
-function loadPlaceData(){
+function loadSpokanePlaceData(){
     placeData = [{
         formatted_address : "Spokane, WA, USA",
         geometry : {
@@ -74,17 +84,6 @@ function loadPlaceData(){
         place_id : "ChIJ5ee7MFwYnlQRsdmEC9bJ_N0",
         types : [ "locality", "political" ]
     }];
-}
-
-function loadMap(latitude, longitude, onSuccess){
-    var data = {
-        url: '../Controllers/loadGMapsJs.php',
-        type: 'GET',
-        dataType: "script",
-        data: {callback:'initMap'},
-        success: onSuccess
-    };
-    $.ajax(data);
 }
 
 function getPlaceData(placeName, onSuccess){
@@ -120,13 +119,22 @@ function initMap() {
 }
 
 function buildMapControls(){
-    var pane = buildPane();
     var searchBox = buildSearchBox();
     var placeName = placeData[0].formatted_address;
     $(searchBox).find('input').val(placeName);
 
-    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(pane);
+    var routeSelector = buildRouteSelector();
+    var togglePane = buildTogglePane();
+
+    //map.controls[google.maps.ControlPosition.LEFT_CENTER].push(pane);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchBox);
+    map.controls[google.maps.ControlPosition.LEFT_TOP].push(routeSelector);
+    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(togglePane);
+
+    var $buttons = $(togglePane).find(':checkbox');
+    $buttons.bootstrapSwitch('disabled', true);
+    $buttons.bootstrapSwitch('state', false, true);
+
 
     $(searchBox).find("#btnSearch").on('click', function(){getPlaceData($("#inputSearch").val(), onPlaceQuerySuccess);});
 
@@ -136,6 +144,31 @@ function buildMapControls(){
             return false;
         }
     });
+}
+
+function buildRouteSelector(){
+    var container = document.createElement('div');
+    $(container).addClass('routeSelector-container');
+
+    var selectList = document.createElement('select');
+    selectList.id = "sel_route_id";
+    selectList.style.height = "100%";
+    $(selectList).on('click', showIfEnabled);
+    $(selectList).on('keydown', showIfEnabled);
+    container.appendChild(selectList);
+
+    return container;
+}
+
+function showIfEnabled(){
+    if ($("#toggleStops").bootstrapSwitch('state'))
+        mapper.showStopsByRouteId();
+    else
+        mapper.hideMarkers();
+
+    mapper.removeRouteLinesFromMap();
+    if ($("#toggleRoutes").bootstrapSwitch('state'))
+        mapper.showRouteLineByID();
 }
 
 function buildSearchBox(){
@@ -151,6 +184,7 @@ function buildSearchBox(){
     menuButton.id = "btnMenu";
     divBtn.appendChild(menuButton);
     container.appendChild(divBtn);
+    $(menuButton).on('click', function(){alert('threw NotImplementedException(" (╯°□°）╯︵ ┻━┻  ")');});
 
     //create the search box
     var _searchBox = document.createElement('div');
@@ -179,13 +213,51 @@ function buildSearchBox(){
     return container;
 }
 
-function buildPane(){
-    var _pane = document.createElement('div');
-    _pane.id = "pane";
-    $(_pane).addClass('widget-pane');
-    $(_pane).hide();
-    return _pane;
+function buildTogglePane(){
+    var container = document.createElement('div');
+    container.id = "togglePane";
+    $(container).addClass('togglePane');
+
+    var divStops = document.createElement('div');
+    divStops.id = "divStops";
+    $(divStops).addClass("toggle-button-container");
+    var toggleStops = document.createElement('input');
+    toggleStops.type = "checkbox";
+    toggleStops.id = "toggleStops";
+    $(toggleStops).on('switchChange.bootstrapSwitch', mapper.toggleStops);
+    toggleStops.dataset.labelText = "stops";
+    toggleStops.dataset.size = "small";
+    divStops.appendChild(toggleStops);
+
+    var divRoutes = document.createElement('div');
+    divRoutes.id = "divRoutes";
+    $(divRoutes).addClass("toggle-button-container");
+    var toggleRoutes = document.createElement('input');
+    toggleRoutes.type = "checkbox";
+    toggleRoutes.id = "toggleRoutes";
+    $(toggleRoutes).on('switchChange.bootstrapSwitch', mapper.toggleRoutes);
+    toggleRoutes.dataset.labelText = "routes";
+    toggleRoutes.dataset.size = "small";
+    divRoutes.appendChild(toggleRoutes);
+
+    var divTraffic = document.createElement('div');
+    divTraffic.id = "divTraffic";
+    $(divTraffic).addClass("toggle-button-container");
+    var toggleTraffic = document.createElement('input');
+    toggleTraffic.type = "checkbox";
+    toggleTraffic.id = "toggleTraffic";
+    $(toggleTraffic).on('switchChange.bootstrapSwitch', mapper.toggleTraffic);
+    toggleTraffic.dataset.labelText = "traffic";
+    toggleTraffic.dataset.size = "small";
+    divTraffic.appendChild(toggleTraffic);
+
+    container.appendChild(divStops);
+    container.appendChild(divRoutes);
+    container.appendChild(divTraffic);
+    return container;
 }
+
+
 
 function getCoordsFromPlace(placeData){
     return {lat: placeData.geometry.location.lat,
@@ -210,6 +282,10 @@ function onPlaceQuerySuccess(response){
     placeData = response.results;
 
     //TODO: update results in sidebar and open it
+    if (placeData.length > 1){
+        loadWidgetPane();
+        showWidgetPane();
+    }
 
     //pan to location
     var sw = placeData[0].geometry.viewport.southwest;

@@ -20,7 +20,7 @@ function validate()
 function sendRequest()
 {
     $callback = urlencode($_GET['callback']);
-    $url = "https://maps.googleapis.com/maps/api/js?key=".GMAPS_JS_API_KEY."&callback=$callback";
+    $url = "https://maps.googleapis.com/maps/api/js?key=".GMAPS_JS_API_KEY."&callback=$callback&libraries=places";
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);

@@ -7,30 +7,32 @@ var Mapper = (function(){
     function init(){
 
         //region private
-        var map;
+        var gMap;
         var gMarkers = [];
         var gRouteNameIdDict = {};
         var gMarkerYou;
         var gRouteLines = [];
         var gTraffic;
-        var _path = "";
+        var gPath = "";
+        var gToggledStops = false;
+        var gToggledRoutes = false;
         //endregion
 
         return {
             //region public
 
             initMap: function(){
-                map = new google.maps.Map(document.getElementById('divGMap'), {
+                gMap = new google.maps.Map(document.getElementById('divGMap'), {
                     center: {lat: 47.492512, lng: -117.58387500000003},
                     zoom: 14
             })},
 
             setMap: function (mapToSet){
-                map = mapToSet;
+                gMap = mapToSet;
             },
 
             setPath: function(path){
-                _path = path;
+                gPath = path;
             },
 
             addNewStops: function(json) {
@@ -39,8 +41,6 @@ var Mapper = (function(){
 
                 this.addNewRouteIds(json);
                 this.updateDropdownRouteIds();
-                console.log("added new stops");
-                console.log(map);
             },
 
 
@@ -59,10 +59,10 @@ var Mapper = (function(){
 
                 gMarkerYou = new google.maps.Marker({
                     position: new google.maps.LatLng(lat, lng),
-                    icon: _path + "../Views/img/you.png"
+                    icon: gPath + "../Views/img/you.png"
                 });
 
-                gMarkerYou.setMap(map);
+                gMarkerYou.setMap(gMap);
             },
 
             buildStopMarker: function(stop) {
@@ -70,7 +70,7 @@ var Mapper = (function(){
                 var marker = new google.maps.Marker({
                     position: latLng,
                     title: stop.name,
-                    icon: _path + "../Views/img/bus.png",
+                    icon: gPath + "../Views/img/bus.png",
                     route_numbers: stop.routes_serving_stop
                 });
 
@@ -80,7 +80,7 @@ var Mapper = (function(){
                     var infowindow = new google.maps.InfoWindow({
                         content: "<input type=\"button\" onclick=\"mapper.showPromptSaveMarker(\'" + stop.onestop_id + "\')\" value=\"Save Stop\"/>"
                     });
-                    infowindow.open(map,marker);
+                    infowindow.open(gMap,marker);
                 });
 
                 marker.addListener('click', this.onMarkerClicked);
@@ -108,7 +108,7 @@ var Mapper = (function(){
 
             onMarkerClicked: function(){
                 var infowindow = new google.maps.InfoWindow({content: this.title + "<br>" + this.getPosition().lat() + "<br>" + this.getPosition().lng() + "<br>"});
-                infowindow.open(map,this);
+                infowindow.open(gMap,this);
             },
 
             removeMarkersFromMap: function(){
@@ -119,7 +119,22 @@ var Mapper = (function(){
 
             showMarkers: function(){
                 for (var i = 0; i < gMarkers.length; i++)
-                    gMarkers[i].setMap(map);
+                    gMarkers[i].setMap(gMap);
+            },
+
+            showStopsByRouteId: function(){
+                Mapper.getInstance().hideMarkers();
+
+                var selectedId = $('#sel_route_id').find(":selected").val();
+
+                for (var i = 0; i < gMarkers.length; i++) {
+                    for (var j = 0; j < gMarkers[i].route_numbers.length; j++) {
+                        if (gMarkers[i].route_numbers[j].route_onestop_id.includes(selectedId)) {
+                            gMarkers[i].setMap(gMap);
+                            break;
+                        }
+                    }
+                }
             },
 
             showPromptSaveMarker: function(onestop_id)
@@ -128,6 +143,15 @@ var Mapper = (function(){
                 if (sname != null && sname != "") {
                     document.cookie = sname + "=" + onestop_id + "; expires=Thu, 18 Dec 2200 12:00:00 UTC; path=/";
                 }
+            },
+
+            toggleStops: function(){
+                if (gToggledStops)
+                    Mapper.getInstance().hideMarkers();
+                else
+                    Mapper.getInstance().showStopsByRouteId();
+
+                gToggledStops = !gToggledStops;
             },
 
             //endregion markers
@@ -139,7 +163,7 @@ var Mapper = (function(){
             if(gTraffic == null)
             {
                 gTraffic = new google.maps.TrafficLayer();
-                gTraffic.setMap(map);
+                gTraffic.setMap(gMap);
             }
             else
             {
@@ -174,21 +198,6 @@ var Mapper = (function(){
                 return newRouteIds;
             },
 
-            showRoutesByRouteId: function(){
-                Mapper.getInstance().hideMarkers();
-
-                var selectedId = $('#sel_route_id').find(":selected").val();
-
-                for (var i = 0; i < gMarkers.length; i++) {
-                    for (var j = 0; j < gMarkers[i].route_numbers.length; j++) {
-                        if (gMarkers[i].route_numbers[j].route_onestop_id.includes(selectedId)) {
-                            gMarkers[i].setMap(map);
-                            break;
-                        }
-                    }
-                }
-            },
-
             updateDropdownRouteIds: function(){
                 var $dropdown = $("#sel_route_id");
                 $dropdown.html("");
@@ -201,10 +210,13 @@ var Mapper = (function(){
                 for (var i = 0; i < sortableRoutes.length; i++)
                     $dropdown.append("<option value=\""+ sortableRoutes[i][0] +"\">"+ sortableRoutes[i][1] + "</option>");
             },
-            
-            drawRoutePolyLines: function(json){
-                if (gRouteLines == null)
-                    gRouteLines = [];
+
+            showRouteLineByID: function(){
+                $.get("https://transit.land/api/v1/route_stop_patterns?traversed_by=" + $("#sel_route_id").val(), Mapper.getInstance().drawRoutePolyLine);
+            },
+
+            drawRoutePolyLine: function(json)
+            {
                 var data = json.route_stop_patterns;
                 var routeCoordinates = [];
                 for(var x = 0; x < data.length; x++)
@@ -218,25 +230,31 @@ var Mapper = (function(){
                             coords = [];
                         }
                         var routePath = new google.maps.Polyline({
-                          path: routeCoordinates,
-                          geodesic: true,
-                          strokeColor: '#FF0000',
-                          strokeOpacity: 1.0,
-                          strokeWeight: 4
+                            path: routeCoordinates,
+                            geodesic: true,
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 1.0,
+                            strokeWeight: 4
                         });
-                        routePath.setMap(map);
+                        routePath.setMap(gMap);
                         gRouteLines.push(routePath);
                         routeCoordinates = [];
                     }
                 }
             },
-			
+
             removeRouteLinesFromMap: function() {
                 for (var i = 0; i < gRouteLines.length; i++)
                     gRouteLines[i].setMap(null);
-                gRouteLines = null;
-            }
+                gRouteLines = [];
+            },
 
+            toggleRoutes: function(){
+                Mapper.getInstance().removeRouteLinesFromMap();
+                if (!gToggledRoutes)
+                    Mapper.getInstance().showRouteLineByID();
+                gToggledRoutes = !gToggledRoutes;
+            }
             //endregion routes
 
             //endregion public
@@ -246,7 +264,6 @@ var Mapper = (function(){
     return {
         // Get the Singleton instance if one exists or create one if it doesn't
         getInstance: function () {
-            console.log("Mapper.getInstance()");
             if ( !instance )
                 instance = init();
 

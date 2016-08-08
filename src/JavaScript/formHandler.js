@@ -16,7 +16,7 @@ var mapper;
 	$("#butHideMarkers").click(mapper.hideMarkers);
 	$("#butShowMarkers").click(mapper.showMarkers);
 
-	$("#sel_route_id").attr("oninput", "mapper.showRoutesByRouteId()");
+	$("#sel_route_id").attr("oninput", "mapper.showStopsByRouteId()");
 
 	console.log("ready");
 //});
