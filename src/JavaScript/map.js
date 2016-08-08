@@ -12,7 +12,7 @@ $(document).ready(function(){
 
     if (queryString.includes('showAllStops=true')){
         loadSpokanePlaceData();
-        loadMap(function(){loadStops(47.6587802, -117.4260466, 40000);});
+        loadMap(function(){loadStops(47.6587802, -117.4260466, 40000, 0);});
     }
 
     else if (queryString.includes('destination=')) { //find the stops around a destination
@@ -33,30 +33,35 @@ function loadMap(onSuccess){
     $.ajax(data);
 }
 
-function loadStops(latitude, longitude, radius){
+function loadStops(latitude, longitude, radius, offset){
     var data = {
-        url: buildStopsURL(latitude, longitude, radius),
+        url: buildStopsURL(latitude, longitude, radius, offset),
         type: 'get',
         dataType: 'json',
-        success: onStopsQuerySuccess
+        success: onStopsQuerySuccess(latitude, longitude, radius)
     };
     $.ajax(data);
 }
 
-function buildStopsURL (lat, lon, rad ){
+function buildStopsURL (lat, lon, rad, off){
     return "https://transit.land/api/v1/stops?lat=" +
-        lat + "&lon=" + lon + "&r=" + rad + "&per_page=2500";
+        lat + "&lon=" + lon + "&r=" + rad + "&offset=" + off + "&per_page=100";
 }
 
-function onStopsQuerySuccess(response){
-    console.log("got stops:");
-    console.log(response);
+function onStopsQuerySuccess(latitude, longitude, radius){
+    return function(data, textStatus, jqXHR){
+        console.log("got stops:");
+        console.log(data);
 
-    mapper.removeMarkersFromMap();
-    mapper.addNewStops(response);
-    var $buttons = $("#togglePane").find(':checkbox');
-    $buttons.bootstrapSwitch('disabled', false);
-    //$buttons.bootstrapSwitch('state', true, true);
+        mapper.addNewStops(data);
+
+        if(data.meta.hasOwnProperty('next')){
+            loadStops(latitude, longitude, radius, data.meta.offset + 100);
+        } else {
+            var $buttons = $("#togglePane").find(':checkbox');
+            $buttons.bootstrapSwitch('disabled', false);
+        }
+    };
 }
 
 function loadSpokanePlaceData(){

@@ -194,7 +194,7 @@ var Mapper = (function(){
                         newRouteIds[route.route_onestop_id] = route.route_name;
                     }
                 }
-                console.log(newRouteIds);
+                //console.log(newRouteIds);
                 return newRouteIds;
             },
 
