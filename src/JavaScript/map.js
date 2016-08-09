@@ -1,18 +1,21 @@
 console.log("map.html");
 var queryString = location.search;
-var map;
-var placeData;
+var map = {};
+var placeData = {};
 var mapper = Mapper.getInstance();
+var userLocation = {};
 
 $(document).ready(function(){
     if (queryString == null || queryString == "") {    //show the map
         loadSpokanePlaceData();
-        loadMap();
+        var sw = placeData[0].geometry.viewport.southwest;
+        var ne = placeData[0].geometry.viewport.northeast;
+        loadMap(function(){loadStopsInBox(sw, ne, 0)});
     }
 
     if (queryString.includes('showAllStops=true')){
         loadSpokanePlaceData();
-        loadMap(function(){loadStops(47.6587802, -117.4260466, 40000, 0);});
+        loadMap(function(){loadStopsAtPoint(47.6587802, -117.4260466, 40000, 0);});
     }
 
     else if (queryString.includes('destination=')) { //find the stops around a destination
@@ -33,22 +36,41 @@ function loadMap(onSuccess){
     $.ajax(data);
 }
 
-function loadStops(latitude, longitude, radius, offset){
+function loadStopsAtPoint(latitude, longitude, radius, offset){
     var data = {
-        url: buildStopsURL(latitude, longitude, radius, offset),
+        url: buildStopsPointURL(latitude, longitude, radius, offset),
         type: 'get',
         dataType: 'json',
-        success: onStopsQuerySuccess(latitude, longitude, radius)
+        success: onStopsPointQuerySuccess(latitude, longitude, radius),
+        error: function(jqXHR, textStatus, errorThrown){console.error(jqXHR); console.error(textStatus); console.error(errorThrown);}
     };
     $.ajax(data);
 }
 
-function buildStopsURL (lat, lon, rad, off){
+function loadStopsInBox(southwest, northeast, offset){
+    var data = {
+        url: buildStopsBoxURL(southwest, northeast, offset),
+        type: 'get',
+        dataType: 'json',
+        success: onStopsBoxQuerySuccess(southwest, northeast, offset),
+        error: function(jqXHR, textStatus, errorThrown){console.error(jqXHR); console.error(textStatus); console.error(errorThrown);}
+    };
+    $.ajax(data);
+}
+
+function buildStopsBoxURL(sw, ne, off){
+    console.log(sw);
+    console.log(ne);
+    return "https://transit.land/api/v1/stops?bbox=" +
+        sw.lng + "," + sw.lat + "," + ne.lng + "," + ne.lat + "&offset=" + off + "&per_page=100";
+}
+
+function buildStopsPointURL (lat, lon, rad, off){
     return "https://transit.land/api/v1/stops?lat=" +
         lat + "&lon=" + lon + "&r=" + rad + "&offset=" + off + "&per_page=100";
 }
 
-function onStopsQuerySuccess(latitude, longitude, radius){
+function onStopsPointQuerySuccess(latitude, longitude, radius){
     return function(data, textStatus, jqXHR){
         console.log("got stops:");
         console.log(data);
@@ -56,7 +78,23 @@ function onStopsQuerySuccess(latitude, longitude, radius){
         mapper.addNewStops(data);
 
         if(data.meta.hasOwnProperty('next')){
-            loadStops(latitude, longitude, radius, data.meta.offset + 100);
+            loadStopsAtPoint(latitude, longitude, radius, data.meta.offset + 100);
+        } else {
+            var $buttons = $("#togglePane").find(':checkbox');
+            $buttons.bootstrapSwitch('disabled', false);
+        }
+    };
+}
+
+function onStopsBoxQuerySuccess(southwest, northeast, offset){
+    return function(data, textStatus, jqXHR){
+        console.log("got stops:");
+        console.log(data);
+
+        mapper.addNewStops(data);
+
+        if(data.meta.hasOwnProperty('next')){
+            loadStopsInBox(southwest, northeast, data.meta.offset + 100);
         } else {
             var $buttons = $("#togglePane").find(':checkbox');
             $buttons.bootstrapSwitch('disabled', false);
@@ -287,10 +325,11 @@ function onPlaceQuerySuccess(response){
     placeData = response.results;
 
     //TODO: update results in sidebar and open it
+    /*
     if (placeData.length > 1){
         loadWidgetPane();
         showWidgetPane();
-    }
+    }*/
 
     //pan to location
     var sw = placeData[0].geometry.viewport.southwest;
@@ -308,4 +347,10 @@ function onPlaceQuerySuccess(response){
     map.setCenter(bounds.getCenter());
     map.fitBounds(bounds);
     map.setZoom(map.getZoom()-1);
+
+    var viewport = map.getBounds();
+    //get a literal copy
+    viewport.sw = JSON.parse(JSON.stringify(viewport.getSouthWest()));
+    viewport.ne = JSON.parse(JSON.stringify(viewport.getNorthEast()));
+    loadStopsInBox(viewport.sw, viewport.ne, 0);
 }
