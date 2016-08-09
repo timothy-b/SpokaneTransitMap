@@ -308,15 +308,14 @@ function getCoordsFromPlace(placeData){
 }
 
 //called when transitioning from start.html to map.html through query
-var curPlaceResultNum = -1;
 function onFirstPlaceQuerySuccess(response){
     console.log("got place: ");
     console.log(response);
     placeData = response.results;
 
-    var curPlace = placeData[++curPlaceResultNum];
-    var coords = getCoordsFromPlace(curPlace);
-    loadMap(coords.lat, coords.lng);
+    var sw = placeData[0].geometry.viewport.southwest;
+    var ne = placeData[0].geometry.viewport.northeast;
+    loadMap(function(){loadStopsInBox(sw, ne, 0)});
 }
 
 
