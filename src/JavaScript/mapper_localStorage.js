@@ -145,19 +145,19 @@ var Mapper = (function(){
                 }
             },
 			
-			removeSavedStop: function (sname) {
-				localStorage.removeItem(sname);
-			},
-			
-			getAllSavedStops: function () {
-				
-				var stopsArr = [];
-				for( var i = 0; i < localStorage.length; i++) {
-					stopsArr[stopsArr.length] = localStorage.key(i);
-				}
-				
-				return JSON.stringify(stopsArr);
-			},
+	    removeSavedStop: function (sname) {
+		localStorage.removeItem(sname);
+	    },
+		
+	    getAllSavedStops: function () {
+		
+		var stopsArr = [];
+		for( var i = 0; i < localStorage.length; i++) {
+			stopsArr[stopsArr.length] = localStorage.key(i);
+		}
+		
+		return JSON.stringify(stopsArr);
+	    },
 
             toggleStops: function(){
                 if (gToggledStops)
