@@ -70,7 +70,7 @@ require_once('../Credentials/doNotUpload.php');
 
 	</body>
 
-	<script src="../JavaScript/mapper.js"></script>
+	<script src="../JavaScript/mapper_localStorage.js"></script>
 	<script src="../JavaScript/formHandler.js"></script>
 	<script>
 		$(document).ready(function(){
