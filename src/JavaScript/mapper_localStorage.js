@@ -83,7 +83,7 @@ var Mapper = (function(){
                     infowindow.open(gMap,marker);
                 });
 
-                marker.addListener('click', this.onMarkerClicked);
+                //marker.addListener('click', this.onMarkerClicked);
                 return marker;
             },
 
