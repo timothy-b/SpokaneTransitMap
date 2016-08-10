@@ -108,7 +108,7 @@ var Mapper = (function(){
 
             onMarkerClicked: function(){
                 var infowindow = new google.maps.InfoWindow({content: this.title + "<br>" + this.getPosition().lat() + "<br>" + this.getPosition().lng() + "<br>"});
-                infowindow.open(gMap,this);
+                //infowindow.open(gMap,this);
             },
 
             removeMarkersFromMap: function(){
