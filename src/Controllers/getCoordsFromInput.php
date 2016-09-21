@@ -15,17 +15,14 @@ function validate()
         die('only GET requests are accepted');
     }
 
-
     if (!isset($_GET['identifier'])) {
         http_response_code(400);
-        die('key identifier not set');
+        die('key \'identifier\' not set');
     }
 }
 
 function sendRequest()
 {
-    if (!array_key_exists('identifier', $_GET))
-        die('key not found: identifier');
 
     $identifier = urlencode($_GET['identifier']);
 
@@ -44,4 +41,5 @@ function sendRequest()
     return $response;
 }
 
+validate();
 echo sendRequest();

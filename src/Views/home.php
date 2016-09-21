@@ -10,10 +10,24 @@ require_once('../Credentials/doNotUpload.php');
 	<head>
 		<title>STA Project Stop Info</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-		<script src="../JavaScript/mapper2.js"></script>
-		<script src="../JavaScript/formHandler.js"></script>
+		<!--
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&libraries=places"></script>
+		-->
+		<script>
+			$(document).ready(function(){
+				var data = {
+					url: '../Controllers/loadGMapsJs.php',
+					type: 'GET',
+					dataType: "script",
+					data: {callback:'mapper.initMap'}
+				};
+				$.ajax(data);
+			});
+		</script>
+
+
+
 		<script src="../../js/bootstrap.min.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&callback=initMap" async defer></script>
 
 		<link rel="stylesheet" href="../../css/bootstrap.min.css">
 
@@ -42,7 +56,7 @@ require_once('../Credentials/doNotUpload.php');
 
 			<input class="form-control" type="text" name="stopName" id="idStopName" placeholder="Search Places"><br>
 
-			<input class="form-control hidden" type="datetime-local" name="stopTime" id="idStopTime">
+			<input class="hidden form-control" type="datetime-local" name="stopTime" id="idStopTime">
 
 			<input class="form-control" type="number" name="stopRadius" id="idStopRadius" placeholder="Radius (meters)"><br>
 
@@ -50,9 +64,19 @@ require_once('../Credentials/doNotUpload.php');
 
 		</div>
 
-		<div id="divMap" ><?php include_once("../Views/map.php")?></div>
+		<div id="divMap" ><?php include_once("../Views/map.html") ?></div>
 
 	</div>
 
 	</body>
+
+	<script src="../JavaScript/mapper.js"></script>
+	<script src="../JavaScript/formHandler.js"></script>
+	<script>
+		$(document).ready(function(){
+			console.log(thing);
+			console.log(mapper);
+		});
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY?>&callback=mapper.initMap" async defer></script>
 </html>

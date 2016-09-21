@@ -1,10 +1,6 @@
-<?php
-/**
- * https://developers.google.com/maps/documentation/javascript/tutorial
- */
-
-require_once('../../Credentials/doNotUpload.php');
-?>
+<!--
+  https://developers.google.com/maps/documentation/javascript/tutorial
+ -->
 
 <!DOCTYPE html>
 <html>
@@ -29,6 +25,7 @@ require_once('../../Credentials/doNotUpload.php');
 <body>
 
 <div id="map"></div>
+
 <script>
     var map;
     function initMap() {
@@ -39,8 +36,19 @@ require_once('../../Credentials/doNotUpload.php');
     }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo GMAPS_JS_API_KEY; ?>&callback=initMap"async defer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+
+<script>
+    $(document).ready(function(){
+        var data = {
+            url: '../loadGMapsJs.php',
+            type: 'GET',
+            dataType: "script",
+            data: {callback:'initMap'}
+        };
+        $.ajax(data);
+    });
 </script>
 
 </body>
